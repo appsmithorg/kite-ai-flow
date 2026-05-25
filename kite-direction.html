@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kite AI CMO — Product Direction</title>
+<title>Kite AI CMO — Who it's for, and what they need</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:        #fafaf6;
     --bg-2:      #f4f2eb;
     --panel:     #ffffff;
-    --col:       #f3f1ea;
 
     --ink:       #0a0a0a;
     --text:      #1a1a1a;
@@ -33,6 +32,7 @@
 
     --amber:      #a16207;
     --amber-soft: #fefce8;
+    --amber-line: #fcd34d;
 
     --red:        #b91c1c;
     --red-soft:   #fef2f2;
@@ -47,7 +47,8 @@
     --gold-tint:  #fef3c7;
     --gold-line:  #f59e0b;
 
-    --shadow-sm: 0 1px 0 rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm:  0 1px 0 rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:  0 1px 0 rgba(0,0,0,0.02), 0 6px 18px rgba(0,0,0,0.05);
     --shadow-gold: 0 1px 0 rgba(0,0,0,0.02), 0 14px 36px rgba(146,64,14,0.12);
   }
   * { box-sizing: border-box; }
@@ -69,22 +70,23 @@
     background-image: radial-gradient(var(--dot) 1px, transparent 1px);
     background-size: 22px 22px;
     background-position: 0 0;
-    -webkit-mask-image: radial-gradient(1200px 700px at 50% 0%, #000 30%, transparent 80%);
-            mask-image: radial-gradient(1200px 700px at 50% 0%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
     pointer-events: none;
     z-index: 0;
   }
   .wrap {
     position: relative; z-index: 1;
-    max-width: 1180px;
+    max-width: 1140px;
     margin: 0 auto;
     padding: 40px 32px 80px;
   }
+  ::selection { background: var(--gold-tint); color: var(--ink); }
 
   /* ====== Topbar ====== */
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 36px;
+    margin-bottom: 44px;
   }
   .brand { display: flex; align-items: center; gap: 14px; }
   .mark {
@@ -92,22 +94,15 @@
     border-radius: 9px;
     background: var(--ink);
     display: grid; place-items: center;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.08) inset,
-      0 6px 14px rgba(0,0,0,0.12);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 6px 14px rgba(0,0,0,0.12);
+    position: relative; overflow: hidden;
   }
   .mark::after {
-    content: "";
-    position: absolute; inset: 0;
+    content: ""; position: absolute; inset: 0;
     background: linear-gradient(160deg, rgba(255,255,255,0.18), transparent 40%);
-    pointer-events: none;
   }
-  .mark svg { width: 18px; height: 18px; color: #ffffff; position: relative; z-index: 1; }
-  .brand-text .t {
-    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
-  }
+  .mark svg { width: 18px; height: 18px; color: #fff; position: relative; z-index: 1; }
+  .brand-text .t { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
   .brand-text .s {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -128,36 +123,29 @@
   .chip .live {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--gold-line);
-    position: relative;
-  }
-  .chip .live::after {
-    content: ""; position: absolute; inset: -3px;
-    border-radius: 50%; border: 1px solid var(--gold-line);
-    opacity: 0.4;
+    box-shadow: 0 0 0 3px var(--gold-tint);
   }
   .btn {
     display: inline-flex; align-items: center; gap: 7px;
     height: 30px; padding: 0 12px;
-    background: var(--ink);
-    color: #fff;
+    background: var(--ink); color: #fff;
     border: 1px solid var(--ink);
     border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
+    font-size: 12px; font-weight: 500;
     text-decoration: none;
+    box-shadow: var(--shadow-sm);
   }
   .btn:hover { background: #000; }
 
   /* ====== Hero ====== */
   .hero {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    margin-bottom: 32px;
-    padding-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 36px;
+    align-items: end;
+    padding-bottom: 32px;
     border-bottom: 1px solid var(--border);
-    gap: 28px;
-    flex-wrap: wrap;
+    margin-bottom: 36px;
   }
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
@@ -165,35 +153,48 @@
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.16em;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     display: inline-flex; align-items: center; gap: 8px;
   }
-  .eyebrow::before {
-    content: ""; width: 14px; height: 1px; background: var(--text-2);
-  }
+  .eyebrow::before { content: ""; width: 14px; height: 1px; background: var(--text-2); }
   h1 {
     margin: 0;
-    font-size: 44px;
-    font-weight: 600;
+    font-family: 'Fraunces', 'Inter', serif;
+    font-size: 56px;
+    font-weight: 500;
     letter-spacing: -0.035em;
-    line-height: 1.02;
+    line-height: 1.0;
     color: var(--ink);
   }
-  h1 .light {
-    color: var(--faint);
+  h1 .light { color: var(--faint); font-weight: 500; }
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
     font-weight: 500;
   }
-  .hero p {
-    margin: 14px 0 0;
+  .dek {
+    margin: 18px 0 0;
     color: var(--text-2);
-    font-size: 14.5px;
-    max-width: 560px;
+    font-size: 15px;
+    max-width: 540px;
     line-height: 1.6;
   }
-  .kpis { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--panel); box-shadow: var(--shadow-sm); }
+  .dek strong { color: var(--ink); font-weight: 600; }
+
+  .hero-side {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--panel);
+    box-shadow: var(--shadow-sm);
+  }
   .kpi {
-    padding: 14px 22px;
-    min-width: 100px;
+    padding: 14px 16px;
     border-right: 1px solid var(--border);
   }
   .kpi:last-child { border-right: none; }
@@ -213,298 +214,453 @@
     margin-top: 6px;
     font-weight: 500;
   }
-  .kpi-gold   { background: var(--gold-soft); }
-  .kpi-gold .n { color: var(--gold); }
-  .kpi-gold .l { color: var(--gold); }
-  .kpi-green  { background: var(--green-soft); }
-  .kpi-green .n { color: var(--green); }
-  .kpi-green .l { color: var(--green); }
-  .kpi-blue   { background: var(--blue-soft); }
-  .kpi-blue .n { color: var(--blue); }
-  .kpi-blue .l { color: var(--blue); }
+  .kpi-gold  { background: var(--gold-soft); }
+  .kpi-gold  .n, .kpi-gold .l  { color: var(--gold); }
+  .kpi-green { background: var(--green-soft); }
+  .kpi-green .n, .kpi-green .l { color: var(--green); }
 
-  /* ====== Thesis callout (gold gradient) ====== */
+  /* Story index in the hero */
+  .index {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .index-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .index-rows { display: flex; flex-direction: column; gap: 2px; }
+  .index-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 12.5px;
+    transition: background .15s ease;
+  }
+  .index-row:hover { background: var(--bg-2); }
+  .index-row .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 22px;
+  }
+  .index-row .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted);
+  }
+  .index-row[data-c="green"] .dot { background: var(--green); }
+  .index-row[data-c="blue"]  .dot { background: var(--blue);  }
+  .index-row[data-c="gold"]  .dot { background: var(--gold-line); }
+  .index-row[data-c="red"]   .dot { background: var(--red);   }
+  .index-row .who {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    h1 { font-size: 40px; }
+  }
+
+  /* ====== Thesis strip (slim, sharper) ====== */
   .thesis {
     background:
-      linear-gradient(135deg, var(--gold-soft) 0%, var(--green-soft) 70%, var(--panel) 100%);
+      linear-gradient(135deg, var(--gold-soft) 0%, var(--green-soft) 80%, var(--panel) 100%);
     border: 1px solid var(--gold-line);
-    border-radius: 16px;
-    padding: 24px 28px 26px;
-    margin-bottom: 28px;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
     box-shadow: var(--shadow-gold);
     position: relative;
     overflow: hidden;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+    align-items: center;
   }
   .thesis::before {
     content: "";
     position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, var(--gold-line) 0%, var(--green) 100%);
   }
-  .thesis-head {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 16px;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
-  .thesis-title {
-    display: flex; align-items: center; gap: 10px;
+  .thesis-tag {
+    display: inline-flex; align-items: center; gap: 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--gold);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     font-weight: 600;
   }
-  .thesis-title::before {
-    content: ""; width: 5px; height: 14px;
+  .thesis-tag::before {
+    content: ""; width: 5px; height: 12px;
     background: var(--gold-line); border-radius: 2px;
   }
-  .thesis-headline {
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.028em;
-    color: var(--ink);
-    line-height: 1.2;
-    margin: 10px 0 0;
-    max-width: 760px;
-  }
-  .thesis-headline .accent { color: var(--gold); }
-  .thesis-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-2);
-    background: rgba(255,255,255,0.7);
-    border: 1px solid var(--gold-line);
-    padding: 6px 11px;
-    border-radius: 6px;
-    align-self: flex-start;
-  }
-  .thesis-body {
-    margin: 14px 0 0;
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text-2);
-    max-width: 760px;
-  }
-  .thesis-body strong { color: var(--ink); font-weight: 600; }
-
-  /* ====== Section shell ====== */
-  .sec {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px 26px 26px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-sm);
-  }
-  .sec-head {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
-  }
-  .sec-title {
-    display: flex; align-items: center; gap: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--ink);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .thesis-text {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
     font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 760px;
   }
-  .sec-title::before {
-    content: ""; width: 4px; height: 13px;
-    background: var(--ink); border-radius: 1px;
+  .thesis-text em {
+    color: var(--gold); font-style: italic;
   }
-  .sec-meta {
+  @media (max-width: 720px) {
+    .thesis { grid-template-columns: 1fr; gap: 10px; }
+    .thesis-text { font-size: 17px; }
+  }
+
+  /* ====== Section header ====== */
+  .section-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head .kicker {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 8px;
   }
-  .sec-lead {
+  .section-head h2 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .section-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+  .section-head p {
+    margin: 10px 0 0;
     font-size: 14.5px;
-    line-height: 1.65;
     color: var(--text-2);
-    margin: 0 0 18px;
-    max-width: 760px;
+    line-height: 1.6;
+    max-width: 640px;
   }
-  .sec-lead strong { color: var(--ink); font-weight: 600; }
+  .section-head .right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+    text-align: right;
+  }
 
-  /* ====== User story cards ====== */
+  /* ====== STORY CARD (the centerpiece) ====== */
   .stories {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    display: flex; flex-direction: column;
+    gap: 18px;
+    margin-bottom: 48px;
   }
   .story {
-    background: var(--bg-2);
+    background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
     position: relative;
   }
-  .story-tag {
+  .story::before {
+    content: "";
+    position: absolute; top: 0; left: 0; bottom: 0;
+    width: 4px;
+  }
+  .story[data-c="green"]::before { background: linear-gradient(180deg, var(--green) 0%, var(--green-line) 100%); }
+  .story[data-c="blue"]::before  { background: linear-gradient(180deg, var(--blue)  0%, var(--blue-line)  100%); }
+  .story[data-c="gold"]::before  { background: linear-gradient(180deg, var(--gold)  0%, var(--gold-line)  100%); }
+  .story[data-c="red"]::before   { background: linear-gradient(180deg, var(--red)   0%, var(--red-line)   100%); }
+
+  .story-top {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 24px;
+    align-items: start;
+    padding: 24px 28px 18px;
+  }
+  .story-num {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--faint);
+  }
+  .story[data-c="green"] .story-num { color: var(--green); opacity: 0.5; }
+  .story[data-c="blue"]  .story-num { color: var(--blue);  opacity: 0.45; }
+  .story[data-c="gold"]  .story-num { color: var(--gold);  opacity: 0.5; }
+  .story[data-c="red"]   .story-num { color: var(--red);   opacity: 0.45; }
+
+  .story-meta { min-width: 0; }
+  .story-tags {
+    display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .tag {
     display: inline-flex; align-items: center; gap: 6px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--text-2);
-    background: #ffffff;
     padding: 4px 9px;
     border-radius: 5px;
-    margin-bottom: 12px;
+    background: var(--bg-2);
     border: 1px solid var(--border);
+    color: var(--text-2);
   }
-  .story-tag .dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: currentColor;
-  }
-  .story.create  .story-tag { color: var(--green); border-color: var(--green-line); }
-  .story.improve .story-tag { color: var(--blue);  border-color: var(--blue-line);  }
-  .story.scale   .story-tag { color: var(--gold);  border-color: var(--gold-line);  }
-  .story.repair  .story-tag { color: var(--red);   border-color: var(--red-line);   }
+  .tag.verb { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .story[data-c="green"] .tag.verb { background: var(--green); border-color: var(--green); }
+  .story[data-c="blue"]  .tag.verb { background: var(--blue);  border-color: var(--blue);  }
+  .story[data-c="gold"]  .tag.verb { background: var(--gold);  border-color: var(--gold);  }
+  .story[data-c="red"]   .tag.verb { background: var(--red);   border-color: var(--red);   }
 
-  .story h3 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
+  .story-when {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
     color: var(--ink);
+    margin: 0;
   }
-  .story .quote {
-    margin: 0 0 14px;
+  .story-persona {
+    margin-top: 6px;
     font-size: 13px;
     color: var(--text-2);
     line-height: 1.55;
-    font-style: italic;
-    padding-left: 12px;
-    border-left: 2px solid var(--border-2);
   }
-  .story .jtbd {
-    margin: 0;
-    font-size: 12.5px;
-    line-height: 1.6;
-    color: var(--text-2);
+  .story-persona strong { color: var(--ink); font-weight: 600; }
+
+  .story-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-align: right;
+    line-height: 1.4;
   }
-  .story .jtbd-k {
+  .story-counter b {
+    display: block;
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    font-weight: 600;
+  }
+
+  /* Story body grid */
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .story-cell {
+    padding: 20px 28px;
+  }
+  .story-cell + .story-cell {
+    border-left: 1px solid var(--border);
+  }
+  .cell-k {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--muted);
-    display: block;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 7px;
   }
-  @media (max-width: 800px) {
-    .stories { grid-template-columns: 1fr; }
+  .cell-k .pill {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor;
   }
-
-  /* ====== Two-up scenario block ====== */
-  .twoup {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+  .moment {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0;
   }
-  .scenario {
+  .moment .where {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-2);
     background: var(--bg-2);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 22px;
-  }
-  .scenario.primary {
-    background: var(--ink);
-    color: #fff;
-    border-color: var(--ink);
-  }
-  .scenario-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--ink);
-    background: #fff;
-    padding: 4px 9px;
+    padding: 1px 7px;
     border-radius: 5px;
-    margin-bottom: 14px;
+    margin-right: 4px;
+    white-space: nowrap;
   }
-  .scenario-tag .check {
-    width: 5px; height: 5px; border-radius: 50%; background: var(--ink);
+
+  .ask {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-style: italic;
+    border-left: 2px solid var(--ink);
+    padding: 2px 0 2px 14px;
+    letter-spacing: -0.01em;
   }
-  .scenario h3 {
-    margin: 0 0 6px;
-    font-size: 19px;
+  .story[data-c="green"] .ask { border-left-color: var(--green); }
+  .story[data-c="blue"]  .ask { border-left-color: var(--blue);  }
+  .story[data-c="gold"]  .ask { border-left-color: var(--gold);  }
+  .story[data-c="red"]   .ask { border-left-color: var(--red);   }
+
+  /* JTBD strip */
+  .jtbd {
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    padding: 18px 28px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .jtbd-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink);
     font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+    display: flex; align-items: center; gap: 9px;
   }
-  .scenario .strap {
-    margin: 0 0 14px;
+  .jtbd-label::before {
+    content: ""; width: 4px; height: 12px;
+    background: var(--ink); border-radius: 1px;
+  }
+  .jtbd-text {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .jtbd-text strong { color: var(--ink); font-weight: 600; }
+
+  /* Win / Fail row */
+  .judge {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--border);
+  }
+  .judge-cell {
+    padding: 18px 28px;
+  }
+  .judge-cell.win  { background: var(--green-soft); }
+  .judge-cell.fail { background: var(--red-soft); border-left: 1px solid var(--border); }
+  .judge-k {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10.5px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 7px;
   }
-  .scenario.primary .strap { color: rgba(255,255,255,0.6); }
-  .scenario p.desc {
-    margin: 0 0 12px;
-    font-size: 12.5px;
+  .judge-cell.win  .judge-k { color: var(--green); }
+  .judge-cell.fail .judge-k { color: var(--red);   }
+  .judge-k .ic {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    display: inline-grid; place-items: center;
+    background: currentColor;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+  }
+  .judge-v {
+    font-size: 13px;
     line-height: 1.6;
-    color: var(--text-2);
-  }
-  .scenario.primary p.desc { color: rgba(255,255,255,0.82); }
-  .scenario ul {
+    color: var(--text);
     margin: 0;
-    padding-left: 18px;
-    font-size: 12.5px;
-    line-height: 1.65;
-    color: var(--text-2);
   }
-  .scenario.primary ul { color: rgba(255,255,255,0.82); }
-  .scenario ul li { margin-bottom: 4px; }
-  .scenario ul li strong { color: var(--ink); font-weight: 600; }
-  .scenario.primary ul li strong { color: #fff; }
-  @media (max-width: 720px) {
-    .twoup { grid-template-columns: 1fr; }
+  .judge-v strong { color: var(--ink); font-weight: 600; }
+
+  @media (max-width: 820px) {
+    .story-top { grid-template-columns: 60px 1fr; }
+    .story-counter { display: none; }
+    .story-grid, .judge { grid-template-columns: 1fr; }
+    .story-cell + .story-cell { border-left: none; border-top: 1px solid var(--border); }
+    .judge-cell.fail { border-left: none; border-top: 1px solid var(--border); }
+    .jtbd { grid-template-columns: 1fr; gap: 8px; }
+    .story-when { font-size: 22px; }
   }
 
-  /* ====== Kite loop (the 5-stage flow) ====== */
+  /* ====== Loop strip ====== */
+  .loop-wrap {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px 24px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow-sm);
+  }
   .loop {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-  }
-  .loop-step {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 14px 18px;
+    gap: 0;
+    margin-top: 6px;
     position: relative;
   }
-  .loop-step::before {
+  .loop::before {
     content: "";
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px; border-radius: 2px 2px 0 0;
+    position: absolute;
+    left: 10%; right: 10%;
+    top: 22px;
+    height: 1px;
+    background:
+      repeating-linear-gradient(90deg, var(--border-2) 0 6px, transparent 6px 12px);
+    z-index: 0;
   }
-  .loop-step[data-i="1"]::before { background: var(--blue); }
-  .loop-step[data-i="2"]::before { background: var(--amber); }
-  .loop-step[data-i="3"]::before { background: var(--gold-line); }
-  .loop-step[data-i="4"]::before { background: var(--green); }
-  .loop-step[data-i="5"]::before { background: var(--ink); }
-  .loop-n {
+  .loop-step {
+    text-align: center;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .loop-dot {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1.5px solid var(--border-2);
+    display: grid; place-items: center;
+    margin: 0 auto 12px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    margin: 6px 0 8px;
-    letter-spacing: 0.1em;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: -0.01em;
   }
+  .loop-step[data-i="1"] .loop-dot { color: var(--blue);  border-color: var(--blue-line); }
+  .loop-step[data-i="2"] .loop-dot { color: var(--amber); border-color: var(--amber-line); }
+  .loop-step[data-i="3"] .loop-dot { color: var(--gold);  border-color: var(--gold-line); }
+  .loop-step[data-i="4"] .loop-dot { color: var(--green); border-color: var(--green-line); }
+  .loop-step[data-i="5"] .loop-dot { color: #fff; background: var(--ink); border-color: var(--ink); }
+
   .loop-step h4 {
-    margin: 0 0 6px;
-    font-size: 14.5px;
+    margin: 0 0 4px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--ink);
@@ -515,18 +671,95 @@
     line-height: 1.55;
     color: var(--text-2);
   }
-  @media (max-width: 900px) {
-    .loop { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 720px) {
+    .loop { grid-template-columns: repeat(2, 1fr); gap: 18px 0; }
+    .loop::before { display: none; }
   }
 
-  /* ====== Risk / consideration rows ====== */
-  .risks {
-    display: flex; flex-direction: column;
-    gap: 12px;
+  /* ====== Generic sec ====== */
+  .sec {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
   }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .sec-title::before {
+    content: ""; width: 4px; height: 12px;
+    background: var(--ink); border-radius: 1px;
+  }
+
+  /* Two-up scopes */
+  .twoup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .scope {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .scope.in  { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .scope-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    background: #fff;
+    color: var(--ink);
+    padding: 4px 9px;
+    border-radius: 5px;
+    margin-bottom: 14px;
+  }
+  .scope h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+  }
+  .scope .strap {
+    margin: 0 0 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .scope.in .strap { color: rgba(255,255,255,0.6); }
+  .scope ul {
+    margin: 0; padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-2);
+  }
+  .scope.in ul { color: rgba(255,255,255,0.82); }
+  .scope ul li strong { color: var(--ink); font-weight: 600; }
+  .scope.in ul li strong { color: #fff; }
+  @media (max-width: 720px) {
+    .twoup { grid-template-columns: 1fr; }
+  }
+
+  /* Risk rows */
+  .risks { display: flex; flex-direction: column; gap: 10px; }
   .risk {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 150px 1fr;
     gap: 18px;
     padding: 16px 18px;
     background: var(--bg-2);
@@ -536,19 +769,20 @@
   }
   .risk-k {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 10.5px;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--muted);
     padding-top: 3px;
+    font-weight: 600;
   }
   .risk-v {
     font-size: 13.5px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text);
   }
   .risk-v strong { color: var(--ink); font-weight: 600; }
-  .risk.warn { background: var(--amber-soft); border-color: #f5d76e; }
+  .risk.warn { background: var(--amber-soft); border-color: var(--amber-line); }
   .risk.warn .risk-k { color: var(--amber); }
   .risk.bad  { background: var(--red-soft); border-color: var(--red-line); }
   .risk.bad  .risk-k { color: var(--red); }
@@ -558,7 +792,7 @@
     .risk { grid-template-columns: 1fr; gap: 6px; }
   }
 
-  /* ====== Reference / POC card ====== */
+  /* Reference card */
   .ref {
     background: var(--ink);
     color: #fff;
@@ -577,11 +811,6 @@
     pointer-events: none;
   }
   .ref-inner { position: relative; z-index: 1; }
-  .ref-head {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
   .ref-tag {
     display: inline-flex; align-items: center; gap: 6px;
     font-family: 'JetBrains Mono', monospace;
@@ -589,16 +818,15 @@
     text-transform: uppercase;
     letter-spacing: 0.16em;
     color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
   }
-  .ref-tag .dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--gold-line);
-  }
+  .ref-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold-line); }
   .ref h3 {
     margin: 0 0 8px;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.022em;
   }
   .ref p {
     margin: 0 0 14px;
@@ -620,9 +848,9 @@
   }
   .ref-link:hover { background: rgba(255,255,255,0.14); }
 
-  /* ====== Open questions ====== */
+  /* Open questions */
   .qrow {
-    display: flex; gap: 14px;
+    display: flex; gap: 16px;
     padding: 14px 0;
     border-top: 1px solid var(--border);
   }
@@ -639,9 +867,8 @@
     height: fit-content;
     letter-spacing: 0.08em;
   }
-  .qrow .qbody { flex: 1; }
   .qrow .qt {
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     color: var(--ink);
     letter-spacing: -0.015em;
@@ -651,13 +878,13 @@
   .qrow .qd {
     font-size: 12.5px;
     color: var(--text-2);
-    line-height: 1.6;
+    line-height: 1.65;
     margin: 0;
   }
 
-  /* ====== Footer ====== */
+  /* Footer */
   .footer {
-    margin-top: 18px;
+    margin-top: 28px;
     padding-top: 18px;
     border-top: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
@@ -667,9 +894,7 @@
     color: var(--muted);
   }
   .footer .attr { color: var(--text-2); }
-  .footer a { color: var(--text-2); text-decoration: none; border-bottom: 1px dashed var(--border-2); }
 
-  /* ====== Pre-formatted code chip ====== */
   code.k {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
@@ -678,13 +903,6 @@
     padding: 1px 6px;
     border-radius: 4px;
     color: var(--ink);
-  }
-
-  @media (max-width: 720px) {
-    h1 { font-size: 34px; }
-    .wrap { padding: 28px 20px 60px; }
-    .sec, .thesis, .ref { padding: 20px 18px; }
-    .hero { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -702,12 +920,12 @@
       </div>
       <div class="brand-text">
         <div class="t">Kite AI CMO</div>
-        <div class="s">product-direction / v0.1</div>
+        <div class="s">user-stories / v0.2</div>
       </div>
     </div>
     <div class="topbar-actions">
       <span class="chip"><span class="live"></span> Draft for review</span>
-      <a class="btn" href="#scenarios">Jump to scenarios</a>
+      <a class="btn" href="#stories">Read the stories →</a>
     </div>
   </div>
 
@@ -715,256 +933,394 @@
   <div class="hero">
     <div>
       <div class="eyebrow">Product direction · 25 May 2026</div>
-      <h1>The Kite a marketer hires,<br><span class="light">not the bot that opens PRs.</span></h1>
-      <p>This document captures the user stories and jobs-to-be-done for a user who wants to use Kite AI CMO on their website, and the direction we are taking after two weeks of debate, prototyping, and LLM research.</p>
+      <h1>The four people<br>who hire <em>Kite</em>,<br><span class="light">and what they're hiring it to do.</span></h1>
+      <p class="dek">Before architecture, before scope, before the GitHub-App debate — <strong>who is the person asking Kite for help, and what do they need the moment after they ask?</strong> This document is built around four user stories. Everything else exists to serve them.</p>
     </div>
-    <div class="kpis">
-      <div class="kpi kpi-gold">
-        <div class="n">01</div>
-        <div class="l">Thesis</div>
+    <div class="hero-side">
+      <div class="kpis">
+        <div class="kpi kpi-gold"><div class="n">04</div><div class="l">Stories</div></div>
+        <div class="kpi kpi-green"><div class="n">01</div><div class="l">Loop</div></div>
+        <div class="kpi"><div class="n">v1</div><div class="l">Next.js</div></div>
+        <div class="kpi"><div class="n">02</div><div class="l">Modes</div></div>
       </div>
-      <div class="kpi kpi-green">
-        <div class="n">04</div>
-        <div class="l">User stories</div>
-      </div>
-      <div class="kpi kpi-blue">
-        <div class="n">05</div>
-        <div class="l">Loop steps</div>
-      </div>
-      <div class="kpi">
-        <div class="n">v1</div>
-        <div class="l">Scope · Next.js</div>
+      <div class="index">
+        <div class="index-title">In this document</div>
+        <div class="index-rows">
+          <a class="index-row" href="#story-01" data-c="green">
+            <span class="num">01</span><span class="dot"></span>
+            <span>Site live by tonight</span>
+            <span class="who">Founder</span>
+          </a>
+          <a class="index-row" href="#story-02" data-c="blue">
+            <span class="num">02</span><span class="dot"></span>
+            <span>Change the hero, ship today</span>
+            <span class="who">Marketer</span>
+          </a>
+          <a class="index-row" href="#story-03" data-c="gold">
+            <span class="num">03</span><span class="dot"></span>
+            <span>Twenty changes a week</span>
+            <span class="who">Growth lead</span>
+          </a>
+          <a class="index-row" href="#story-04" data-c="red">
+            <span class="num">04</span><span class="dot"></span>
+            <span>Site is drifting, fix it</span>
+            <span class="who">Owner</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Thesis -->
   <section class="thesis">
-    <div class="thesis-head">
-      <div>
-        <div class="thesis-title">The thesis</div>
-        <div class="thesis-headline">
-          <span class="accent">Infinite scope is not a scope.</span> If we don't control the website runtime, we can't control the experience.
+    <div class="thesis-tag">The thesis</div>
+    <div class="thesis-text">
+      Every one of these users hires Kite to <em>finish the job</em>, not to hand them a pull request. If Kite doesn't own the runtime — build, preview, deploy — then we don't own the outcome. <em>Infinite scope is not a scope.</em>
+    </div>
+  </section>
+
+  <!-- Section: stories -->
+  <div class="section-head" id="stories">
+    <div>
+      <div class="kicker">Section · 01 of 03</div>
+      <h2>Four user stories, each with a <em>job to be done.</em></h2>
+      <p>Each card has the same shape: <strong>when</strong> the moment hits, <strong>who</strong> the person is, <strong>what</strong> they say to Kite, the <strong>job</strong> they've hired Kite to do, and how we know we <strong>won or lost</strong>.</p>
+    </div>
+    <div class="right">4 stories<br><span style="color:var(--text-2);">≈ 7 min read</span></div>
+  </div>
+
+  <div class="stories">
+
+    <!-- STORY 01 -->
+    <article class="story" data-c="green" id="story-01">
+      <div class="story-top">
+        <div class="story-num">01</div>
+        <div class="story-meta">
+          <div class="story-tags">
+            <span class="tag verb">Create · greenfield</span>
+            <span class="tag">No existing repo</span>
+            <span class="tag">First-time user</span>
+          </div>
+          <h3 class="story-when">"I have a pitch deck and a demo on Monday. I don't have a website."</h3>
+          <p class="story-persona">
+            <strong>Maya, solo founder.</strong> Two months into a stealth AI tax-prep tool called Lumenfile. She can write copy and pick a font; she has never touched a CI pipeline. She has a GitHub account she made for an old hackathon.
+          </p>
+        </div>
+        <div class="story-counter">Hires Kite as<br><b>The brand-launch CMO</b></div>
+      </div>
+
+      <div class="story-grid">
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>The moment</div>
+          <p class="moment">
+            <span class="where">Friday · 8:42 pm</span>
+            The pitch deck has gotten three "where's your site?" emails this week. She opens Kite on a laptop with one tab and a logo SVG on her desktop. There is nothing else. She has until Sunday night before the Monday demo.
+          </p>
+        </div>
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>What she says to Kite</div>
+          <p class="ask">"Build me a five-page marketing site for Lumenfile — landing, pricing, a short blog, an about, and a demo CTA. AI tax prep for indie consultants. Calm, serious, not playful."</p>
         </div>
       </div>
-      <span class="thesis-meta">decided · post-LLM research</span>
-    </div>
-    <p class="thesis-body">
-      "Just raise a PR" looks scoped, but it creates infinite scope — the final outcome depends on each customer's CI/CD, env vars, build setup, preview deployments, hosting, deploy speed, and repo conventions. That gives Kite <strong>low control but high accountability</strong>: even when Kite writes the right code, the experience still breaks if the build fails, the preview doesn't exist, or env vars are missing. From the user's point of view, it's still a Kite failure. So Kite should not be just a PR generator. Kite should <strong>import the website into a Kite-controlled runtime</strong> where we can understand, modify, preview, approve, and deploy. GitHub stays connected for source control and sync, but the core website experience is owned by Kite.
-    </p>
-  </section>
 
-  <!-- The outcome we're designing for -->
-  <section class="sec">
-    <div class="sec-head">
-      <div class="sec-title">The outcome we're designing for</div>
-      <span class="sec-meta">north-star quote</span>
-    </div>
-    <p class="sec-lead">
-      Every decision below should be evaluated against one sentence — the moment we want the user to feel the first time they ask Kite to change their site:
-    </p>
-    <div style="background: var(--ink); color: #fff; padding: 22px 26px; border-radius: 12px; font-size: 19px; font-weight: 500; line-height: 1.45; letter-spacing: -0.02em; max-width: 820px;">
-      "I asked for a change, Kite understood it, previewed it, and shipped it almost instantly."
-    </div>
-    <p class="sec-lead" style="margin: 16px 0 0;">
-      That is not possible if every change has to wait on the customer's CI/CD and deployment pipeline. The <strong>snap-speed wow factor</strong> requires that Kite own the runtime end-to-end — at least for the categories of website we choose to support.
-    </p>
-  </section>
-
-  <!-- User stories -->
-  <section class="sec" id="stories">
-    <div class="sec-head">
-      <div class="sec-title">User stories · jobs to be done</div>
-      <span class="sec-meta">4 primary personas</span>
-    </div>
-    <p class="sec-lead">
-      The user looking to use Kite AI CMO is, in almost every case, <strong>a marketer or a founder acting like one</strong> — someone whose job is to ship copy, pages, and campaigns, not to debug builds. The CMO analogy is load-bearing: <strong>hiring a CMO doesn't mean rebuilding the business infrastructure</strong>. A real CMO first understands the existing business, then adds the right capabilities. Kite should behave the same way.
-    </p>
-    <div class="stories">
-
-      <div class="story create">
-        <span class="story-tag"><span class="dot"></span>Create · greenfield</span>
-        <h3>The founder shipping a marketing site from scratch</h3>
-        <p class="quote">"I have a product and a pitch. I don't have a website yet. I want one live by tonight, owned by me on my GitHub, but I don't want to think about hosting, previews, or CI/CD."</p>
-        <p class="jtbd">
-          <span class="jtbd-k">Job to be done</span>
-          When I have a brand and a few pages in my head, help me get a production-quality marketing site live in one session, on infra I can take with me, without ever opening a terminal.
-        </p>
+      <div class="jtbd">
+        <div class="jtbd-label">Job to be done</div>
+        <div class="jtbd-text">
+          When I have a product and a brand in my head but nothing built, <strong>get me a production-quality marketing site live in one session</strong> — on infra I'll own through my own GitHub the moment I want to walk away — without me ever opening a terminal or making a Vercel account.
+        </div>
       </div>
 
-      <div class="story improve">
-        <span class="story-tag"><span class="dot"></span>Improve · existing repo</span>
-        <h3>The marketer iterating on a live Next.js site</h3>
-        <p class="quote">"The site already exists, the dev team built it. I want to change the hero headline, swap a CTA, add a pricing page — and see the change live, not wait two days for the next release."</p>
-        <p class="jtbd">
-          <span class="jtbd-k">Job to be done</span>
-          When the website is already in a GitHub repo, let me import it, understand what's there, propose changes, preview them on a Kite-controlled URL, and ship to production when I approve.
-        </p>
+      <div class="judge">
+        <div class="judge-cell win">
+          <div class="judge-k"><span class="ic">✓</span>We win when</div>
+          <p class="judge-v">A live, brand-coherent site at a real URL <strong>within 30 minutes</strong>. A Kite GitHub App has provisioned <code class="k">lumenfile/site</code> on her account. She edits the headline by speaking to Kite, sees it on a preview URL in seconds, and approves. The Monday demo opens with a working website.</p>
+        </div>
+        <div class="judge-cell fail">
+          <div class="judge-k"><span class="ic">!</span>We lose when</div>
+          <p class="judge-v">Kite generates a Next.js zip, hands her a guide to Vercel, and disappears. Or: the site is live but lives only inside Kite with no GitHub export, so she's locked in on day one. <strong>Either failure costs the trust the demo was supposed to build.</strong></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- STORY 02 -->
+    <article class="story" data-c="blue" id="story-02">
+      <div class="story-top">
+        <div class="story-num">02</div>
+        <div class="story-meta">
+          <div class="story-tags">
+            <span class="tag verb">Improve · existing repo</span>
+            <span class="tag">Next.js · App Router</span>
+            <span class="tag">Has a dev team</span>
+          </div>
+          <h3 class="story-when">"The site exists. I just want to change the hero headline today, not next sprint."</h3>
+          <p class="story-persona">
+            <strong>Devan, head of marketing</strong> at a 40-person Series A company. The marketing site is a Next.js repo the engineering team built nine months ago. Every copy change goes into a Linear ticket and ships "with the next release." That is not fast enough.
+          </p>
+        </div>
+        <div class="story-counter">Hires Kite as<br><b>The on-staff site editor</b></div>
       </div>
 
-      <div class="story scale">
-        <span class="story-tag"><span class="dot"></span>Scale · ongoing optimisation</span>
-        <h3>The growth lead running constant experiments</h3>
-        <p class="quote">"I'm not making one change. I'm making twenty a week. Different headlines on different pages, an A/B on the pricing block, a new testimonial section by Friday."</p>
-        <p class="jtbd">
-          <span class="jtbd-k">Job to be done</span>
-          When I'm in a rhythm of weekly experiments, make each change feel like one prompt and one approval — and make Kite remember the brand voice, components, and conventions so I'm not re-explaining context every time.
-        </p>
+      <div class="story-grid">
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>The moment</div>
+          <p class="moment">
+            <span class="where">Tuesday · 11:15 am</span>
+            The CEO just pasted a new positioning line into Slack and said "let's try this live before the all-hands." Devan has historically had to write a ticket, wait two days, and watch the engineer get distracted by an incident. He installs the Kite GitHub App on the marketing-site repo.
+          </p>
+        </div>
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>What he says to Kite</div>
+          <p class="ask">"Replace the homepage H1 with this: '<em>Audit-ready books, without the auditors.</em>' Keep the existing eyebrow. Push it to a preview I can show the CEO before lunch."</p>
+        </div>
       </div>
 
-      <div class="story repair">
-        <span class="story-tag"><span class="dot"></span>Repair · diagnose &amp; fix</span>
-        <h3>The owner whose site is drifting</h3>
-        <p class="quote">"My site loads slowly on mobile, the OG tags are wrong, and half the blog posts have broken images. I don't even know where to start."</p>
-        <p class="jtbd">
-          <span class="jtbd-k">Job to be done</span>
-          When I describe a problem in plain English, audit the site, surface what's actually wrong, propose specific fixes with a preview, and let me ship them without becoming a developer.
-        </p>
+      <div class="jtbd">
+        <div class="jtbd-label">Job to be done</div>
+        <div class="jtbd-text">
+          When the website is already a real codebase someone else wrote, <strong>import it, understand its components and conventions, make the change in the right file, preview it on a Kite URL within seconds, and merge to <code class="k">main</code> only when I approve</strong> — without me having to learn the repo or wait for the next release train.
+        </div>
       </div>
 
+      <div class="judge">
+        <div class="judge-cell win">
+          <div class="judge-k"><span class="ic">✓</span>We win when</div>
+          <p class="judge-v">Kite recognises this as a Next.js app, finds the <code class="k">&lt;Hero/&gt;</code> component, makes the smallest possible change, and produces a preview URL Devan can paste into Slack in under five minutes. The PR back to <code class="k">main</code> looks like one Devan's engineers would have written themselves.</p>
+        </div>
+        <div class="judge-cell fail">
+          <div class="judge-k"><span class="ic">!</span>We lose when</div>
+          <p class="judge-v">Kite rewrites the hero component "to be cleaner," touches three other files, and the engineering team rejects the PR. Or: Kite raises the PR but the preview depends on the company's own CI/CD, which is slow or flaky — so Devan still can't show the CEO anything <strong>today</strong>.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- STORY 03 -->
+    <article class="story" data-c="gold" id="story-03">
+      <div class="story-top">
+        <div class="story-num">03</div>
+        <div class="story-meta">
+          <div class="story-tags">
+            <span class="tag verb">Scale · ongoing experiments</span>
+            <span class="tag">Weekly cadence</span>
+            <span class="tag">Brand is fixed</span>
+          </div>
+          <h3 class="story-when">"I'm not making one change. I'm making twenty a week, and Kite should remember every one of them."</h3>
+          <p class="story-persona">
+            <strong>Priya, growth lead</strong> at a B2B SaaS. She runs a permanent backlog of pricing-page tweaks, headline A/Bs, new testimonial blocks, and seasonal banners. Her job is throughput — turning ten experiment ideas into ten shipped variants.
+          </p>
+        </div>
+        <div class="story-counter">Hires Kite as<br><b>The experimentation hand</b></div>
+      </div>
+
+      <div class="story-grid">
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>The moment</div>
+          <p class="moment">
+            <span class="where">Every Monday · 9 am</span>
+            Priya pastes the week's experiment list into Kite — five headline tests, a new logo strip, a swap of the pricing FAQ. She does not want to re-explain the brand voice, the components, or what "do not touch" means. Kite should already know.
+          </p>
+        </div>
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>What she says to Kite</div>
+          <p class="ask">"Spin up A/Bs for these five hero headlines. Use the same testimonial block, no new components. Ship them as one branch, not five PRs. Tell me which ones are live by Friday."</p>
+        </div>
+      </div>
+
+      <div class="jtbd">
+        <div class="jtbd-label">Job to be done</div>
+        <div class="jtbd-text">
+          When I'm running a constant rhythm of small experiments, <strong>make each change one prompt and one approval, batch them sensibly, and persist context across weeks</strong> — brand voice, component library, "don't touch" zones — so I'm a growth lead, not a project manager for Kite.
+        </div>
+      </div>
+
+      <div class="judge">
+        <div class="judge-cell win">
+          <div class="judge-k"><span class="ic">✓</span>We win when</div>
+          <p class="judge-v">Five variants live behind a feature flag by Wednesday, all using the existing testimonial component, all on previews she can share with the CRO. Kite has remembered last month's brand-voice corrections and applied them silently. <strong>Throughput goes up; her judgment is what gets scaled, not her time.</strong></p>
+        </div>
+        <div class="judge-cell fail">
+          <div class="judge-k"><span class="ic">!</span>We lose when</div>
+          <p class="judge-v">Kite treats each ask like the first one. It re-asks for brand guidelines, creates five near-duplicate components, opens five separate PRs Priya has to babysit, and forgets the "don't touch the pricing JSON" rule she explained last week. <strong>Cognitive load shifts from engineering to her.</strong></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- STORY 04 -->
+    <article class="story" data-c="red" id="story-04">
+      <div class="story-top">
+        <div class="story-num">04</div>
+        <div class="story-meta">
+          <div class="story-tags">
+            <span class="tag verb">Repair · diagnose &amp; fix</span>
+            <span class="tag">Inherited site</span>
+            <span class="tag">Non-technical owner</span>
+          </div>
+          <h3 class="story-when">"My site loads slowly, OG tags are wrong, half the blog images are broken. I don't know where to start."</h3>
+          <p class="story-persona">
+            <strong>Hari, founder</strong> of a five-year-old bootstrapped product. The original developer left two years ago. The site mostly works. It also mostly doesn't. He has the GitHub login somewhere; he hasn't opened the repo in a year.
+          </p>
+        </div>
+        <div class="story-counter">Hires Kite as<br><b>The diagnostic technician</b></div>
+      </div>
+
+      <div class="story-grid">
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>The moment</div>
+          <p class="moment">
+            <span class="where">Sunday · 10 pm</span>
+            A friend tells Hari his site is "really slow on mobile" and the LinkedIn preview shows the wrong image. He doesn't know what an OG tag is. He doesn't want to learn. He just wants someone to fix it before Monday morning.
+          </p>
+        </div>
+        <div class="story-cell">
+          <div class="cell-k"><span class="pill"></span>What he says to Kite</div>
+          <p class="ask">"Something's wrong with my website. It loads slow on phones and looks broken when I share it on LinkedIn. Find what's wrong and fix it. Don't make me read anything."</p>
+        </div>
+      </div>
+
+      <div class="jtbd">
+        <div class="jtbd-label">Job to be done</div>
+        <div class="jtbd-text">
+          When I describe a problem in plain English, <strong>audit the site, surface what is actually wrong in one human-readable list, propose specific fixes with previews, and let me ship them with one tap</strong> — without ever making me become a developer to own the site I already own.
+        </div>
+      </div>
+
+      <div class="judge">
+        <div class="judge-cell win">
+          <div class="judge-k"><span class="ic">✓</span>We win when</div>
+          <p class="judge-v">Kite returns a ranked list — "<strong>1.</strong> Hero image is 4.2 MB, served unoptimised. <strong>2.</strong> OG tag points to a deleted asset. <strong>3.</strong> Three blog posts reference missing CDN images." Each has a preview of the fix and a single approve button. Hari ships all three in ten minutes.</p>
+        </div>
+        <div class="judge-cell fail">
+          <div class="judge-k"><span class="ic">!</span>We lose when</div>
+          <p class="judge-v">Kite produces a 40-item Lighthouse report and tells him to "consider adding next/image." Or: Kite proposes fixes but routes them through his abandoned CI pipeline, which has been broken for eight months. <strong>Nothing ships, and Hari's instinct that "I can't fix it myself" is confirmed.</strong></p>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- The loop -->
+  <div class="section-head">
+    <div>
+      <div class="kicker">Section · 02 of 03</div>
+      <h2>One loop, <em>shared by all four stories.</em></h2>
+      <p>Every story above lives or dies on the same five-step loop. The names above the dots are not abstractions — they're the literal moments Maya, Devan, Priya, and Hari experience.</p>
     </div>
-  </section>
+    <div class="right">5 steps<br><span style="color:var(--text-2);">Kite-owned runtime</span></div>
+  </div>
 
-  <!-- The two scenarios -->
-  <section class="sec" id="scenarios">
-    <div class="sec-head">
-      <div class="sec-title">The two operating scenarios</div>
-      <span class="sec-meta">create · improve</span>
-    </div>
-    <p class="sec-lead">
-      Underneath the four user stories, Kite has to operate in two technical modes. For a great UX, Kite needs to be <strong>a strong GitHub App in both</strong> — creating new projects and improving existing ones — with direct access to the codebase.
-    </p>
-    <div class="twoup">
-      <div class="scenario primary">
-        <span class="scenario-tag"><span class="check"></span>Scenario A · primary v1</span>
-        <h3>Improve an existing GitHub repo</h3>
-        <div class="strap">Bring your site → Kite owns the runtime</div>
-        <p class="desc">User installs the Kite GitHub App on their repo. Kite imports the website into a Kite-controlled runtime, understands the stack, and from then on every change runs through Kite's loop. GitHub stays connected for source control and sync.</p>
-        <ul>
-          <li><strong>Detect the stack first</strong> — only ask for GitHub when we can credibly manage the tech.</li>
-          <li>Pre-analysis → analysis report → credit card → connect GitHub → in-depth verification → charge.</li>
-          <li>Kite owns build, preview, deploy. The customer's CI/CD doesn't gate the wow moment.</li>
-        </ul>
-      </div>
-      <div class="scenario">
-        <span class="scenario-tag"><span class="check"></span>Scenario B · greenfield</span>
-        <h3>Create a new website end-to-end</h3>
-        <div class="strap">Start in Kite → land in their GitHub</div>
-        <p class="desc">User starts with a prompt: "Here's my business, here's what I need." Kite generates the site inside its own runtime, then provisions a fresh GitHub repo via the GitHub App so the user owns the code from day one.</p>
-        <ul>
-          <li>No infra decisions for the user. Hosting, previews, CI/CD all live inside Kite by default.</li>
-          <li>GitHub is the export layer — the user can leave with their code anytime.</li>
-          <li>Same loop as Scenario A. <strong>Same product</strong>, not a separate flow.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- The Kite loop -->
-  <section class="sec">
-    <div class="sec-head">
-      <div class="sec-title">The Kite loop · how every change moves</div>
-      <span class="sec-meta">5 stages</span>
-    </div>
-    <p class="sec-lead">
-      Once the website is imported, every change — Scenario A or B — runs through the same five steps. This is the loop the user feels.
-    </p>
+  <div class="loop-wrap">
     <div class="loop">
       <div class="loop-step" data-i="1">
-        <div class="loop-n">01</div>
+        <div class="loop-dot">01</div>
         <h4>Understand</h4>
-        <p>Read the repo, the stack, the brand, the existing components. Form a working model of the site before proposing anything.</p>
+        <p>Read the repo or the prompt. Form a working model of the site, its stack, its brand, and its conventions.</p>
       </div>
       <div class="loop-step" data-i="2">
-        <div class="loop-n">02</div>
+        <div class="loop-dot">02</div>
         <h4>Modify</h4>
-        <p>Make the change the user asked for, in the right files, following the project's existing conventions — not Kite's.</p>
+        <p>Make the smallest correct change in the right files, in the project's existing style — not Kite's.</p>
       </div>
       <div class="loop-step" data-i="3">
-        <div class="loop-n">03</div>
+        <div class="loop-dot">03</div>
         <h4>Preview</h4>
-        <p>Render the change on a Kite-controlled preview URL within seconds. No waiting on the customer's pipeline.</p>
+        <p>Render the change on a Kite-controlled URL in seconds. The customer's CI/CD is not in the critical path.</p>
       </div>
       <div class="loop-step" data-i="4">
-        <div class="loop-n">04</div>
+        <div class="loop-dot">04</div>
         <h4>Approve</h4>
-        <p>The user reviews the preview and either approves, asks for revisions, or rolls back — all inside Kite.</p>
+        <p>The user looks at it. They approve, ask for a revision, or roll back — all inside Kite, in plain language.</p>
       </div>
       <div class="loop-step" data-i="5">
-        <div class="loop-n">05</div>
+        <div class="loop-dot">05</div>
         <h4>Deploy</h4>
-        <p>On approval, Kite ships to production and syncs the commit back to the user's GitHub <code class="k">main</code>.</p>
+        <p>On approval, Kite ships to production and syncs the commit back to <code class="k">main</code> on the user's GitHub.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- The architecture that the stories require -->
+  <div class="section-head">
+    <div>
+      <div class="kicker">Section · 03 of 03</div>
+      <h2>What the stories <em>force us to build.</em></h2>
+      <p>Working backwards from those four moments, three things become non-negotiable, and one set of things has to be deferred.</p>
+    </div>
+    <div class="right">scenarios · scope · risks</div>
+  </div>
+
+  <!-- Two scenarios -->
+  <section class="sec">
+    <div class="sec-title">Two scenarios, one product</div>
+    <div class="twoup">
+      <div class="scope in">
+        <span class="scope-tag">Scenario A · primary</span>
+        <h3>Improve an existing GitHub repo</h3>
+        <div class="strap">Devan, Priya, Hari live here</div>
+        <ul>
+          <li><strong>Detect the stack first.</strong> Only ask for the GitHub install once we know we can credibly run their site.</li>
+          <li>Funnel: pre-analysis → analysis report → credit card → connect GitHub → in-depth verification → charge.</li>
+          <li><strong>Kite owns build, preview, deploy.</strong> The customer's CI/CD is not in the wow path.</li>
+          <li>Branch off <code class="k">main</code> per change. Merge to <code class="k">main</code> on approval. No "kite branch."</li>
+        </ul>
+      </div>
+      <div class="scope">
+        <span class="scope-tag">Scenario B · greenfield</span>
+        <h3>Create a new website end-to-end</h3>
+        <div class="strap">Maya starts here</div>
+        <ul>
+          <li>Begins with a prompt and a brand brief. Kite generates inside its own runtime.</li>
+          <li><strong>Lands in their GitHub via the Kite App</strong> the moment they want to own the code.</li>
+          <li>No infra decisions for the user. Hosting, previews, CI/CD all live inside Kite by default.</li>
+          <li><strong>Same loop as Scenario A.</strong> Same product surface, not a separate flow.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- Architectural considerations -->
+  <!-- Architectural risks -->
   <section class="sec">
-    <div class="sec-head">
-      <div class="sec-title">Architectural considerations</div>
-      <span class="sec-meta">resolved · open</span>
-    </div>
-    <p class="sec-lead">
-      Three concerns surfaced repeatedly during the debate. Two are now constraints we will design around; one is a pattern we want to learn from.
-    </p>
+    <div class="sec-title">Architectural calls already made</div>
     <div class="risks">
-
       <div class="risk warn">
         <div class="risk-k">DP ⇄ prod parity</div>
-        <div class="risk-v">
-          <strong>Risk:</strong> if Kite runs DPs in a Kite environment but production lives on the customer's existing setup, a change that works in the DP can still break in production. <strong>Implication:</strong> for v1, the DP environment and the production environment must be identical — both Kite-controlled — or the wow moment is at the mercy of an environment we don't own.
-        </div>
+        <div class="risk-v">If Kite runs DPs in a Kite environment but production lives on the customer's existing setup, a change that works in the DP can still break in production. <strong>For v1, the DP and production environments must be identical — both Kite-controlled.</strong> Otherwise the wow moment is rented from infra we don't own.</div>
       </div>
-
       <div class="risk bad">
         <div class="risk-k">"Kite branch" model</div>
-        <div class="risk-v">
-          <strong>Rejected.</strong> If we treat a <code class="k">kite</code> branch as the main branch inside Kite, the user has to "publish" twice — once from the DP into the <code class="k">kite</code> branch, again from <code class="k">kite</code> into <code class="k">main</code>. That's two mental steps to do one thing. Bad UX. We will instead branch off <code class="k">main</code> per change and merge directly into <code class="k">main</code> on approval.
-        </div>
+        <div class="risk-v"><strong>Rejected.</strong> Treating a <code class="k">kite</code> branch as Kite's main means the user has to publish twice — once from the DP into <code class="k">kite</code>, again from <code class="k">kite</code> into <code class="k">main</code>. Two mental steps to do one thing. We branch off <code class="k">main</code> per change and merge directly into <code class="k">main</code> on approval.</div>
       </div>
-
       <div class="risk good">
         <div class="risk-k">Vercel GitHub App</div>
-        <div class="risk-v">
-          <strong>Pattern to study.</strong> When the Vercel GitHub App is installed, it starts producing DPs for every push and exposes a production URL that may or may not be the customer's actual production. The split between "Vercel's preview/prod" and "the customer's real prod" is the same shape as our problem — and worth a focused teardown before we lock our own architecture.
-        </div>
+        <div class="risk-v"><strong>Pattern to study, before we lock our own.</strong> Installing the Vercel App starts DPs for every push and exposes a production URL that may or may not be the customer's real prod. The split between "Vercel's prod" and "the customer's prod" is the exact shape of our problem. Worth a focused teardown.</div>
       </div>
-
     </div>
   </section>
 
   <!-- v1 scope -->
   <section class="sec">
-    <div class="sec-head">
-      <div class="sec-title">v1 scope · what we are explicitly not building</div>
-      <span class="sec-meta">bounded</span>
-    </div>
-    <p class="sec-lead">
-      Infinite scope killed the PR-only approach. We should not let it kill the runtime approach either. v1 is deliberately narrow.
-    </p>
+    <div class="sec-title">v1 scope · narrow on purpose</div>
     <div class="twoup">
-      <div class="scenario">
-        <span class="scenario-tag"><span class="check"></span>In scope · v1</span>
-        <h3>Next.js marketing sites</h3>
-        <div class="strap">one stack · run it really well</div>
+      <div class="scope">
+        <span class="scope-tag">In scope</span>
+        <h3>Next.js marketing sites, run really well</h3>
+        <div class="strap">one stack · two scenarios · one loop</div>
         <ul>
           <li><strong>Next.js</strong> as the only supported framework.</li>
-          <li><strong>Marketing-style websites</strong> — landing pages, pricing, blog, simple CMS.</li>
-          <li>GitHub App as the connector. No GitLab, no Bitbucket.</li>
-          <li>Kite-owned runtime for build, preview, and deploy.</li>
-          <li>Both scenarios (import existing, create new) on the same loop.</li>
+          <li><strong>Marketing-shape sites</strong> — landing, pricing, blog, simple CMS.</li>
+          <li>GitHub App as the only connector.</li>
+          <li>Kite-owned runtime for build, preview, deploy.</li>
+          <li>All four user stories on the same five-step loop.</li>
         </ul>
       </div>
-      <div class="scenario">
-        <span class="scenario-tag"><span class="check"></span>Not in v1</span>
+      <div class="scope">
+        <span class="scope-tag">Explicitly not v1</span>
         <h3>Anything that fragments the runtime</h3>
-        <div class="strap">say no — for now</div>
+        <div class="strap">say no, on purpose, for now</div>
         <ul>
-          <li>Other frameworks (Astro, Remix, plain HTML, WordPress).</li>
-          <li>Multi-repo changes within a single Kite thread.</li>
+          <li>Astro, Remix, plain HTML, WordPress.</li>
+          <li>Multi-repo changes inside one Kite thread.</li>
           <li>Customer-owned CI/CD as the deploy path.</li>
-          <li>Web apps with auth, dashboards, server-side state.</li>
-          <li>"Just raise a PR" as a fallback mode — it dilutes the loop.</li>
+          <li>Apps with auth, dashboards, server-side state.</li>
+          <li>"Just raise a PR" as a fallback. It dilutes the loop.</li>
         </ul>
       </div>
     </div>
@@ -973,13 +1329,10 @@
   <!-- POC reference -->
   <section class="ref">
     <div class="ref-inner">
-      <div class="ref-head">
-        <span class="ref-tag"><span class="dot"></span>POC · available today</span>
-        <span class="ref-tag" style="color: rgba(255,255,255,0.4);">appsmithorg / kiteport</span>
-      </div>
-      <h3>Experiment with kiteAI as a Next.js repository</h3>
+      <div class="ref-tag"><span class="dot"></span>POC · the obvious first target</div>
+      <h3>Run our own marketing site through the loop first.</h3>
       <p>
-        The fastest way to pressure-test the v1 scope is to run our own marketing site through it. The kiteAI website is already published as a Next.js repository under the kiteport monorepo — use it as the first import target, the first DP, the first end-to-end loop. If the loop is great here, the loop is great.
+        The kiteAI website is already a Next.js repo inside the kiteport monorepo. It is the cheapest, sharpest pressure-test of the v1 scope we have. If we can't run the loop on our own site, we can't run it on anyone else's. If we can — every demo writes itself.
       </p>
       <a class="ref-link" href="https://github.com/appsmithorg/kiteport/tree/main/kiteai-nextjs" target="_blank" rel="noreferrer">
         github.com/appsmithorg/kiteport/tree/main/kiteai-nextjs →
@@ -989,49 +1342,45 @@
 
   <!-- Open questions -->
   <section class="sec">
-    <div class="sec-head">
-      <div class="sec-title">Open questions for the team</div>
-      <span class="sec-meta">need a decision</span>
-    </div>
+    <div class="sec-title">Still open · need the team's call</div>
 
     <div class="qrow">
       <span class="qn">Q1</span>
-      <div class="qbody">
-        <p class="qt">How permissive should the GitHub App permissions be on day one?</p>
-        <p class="qd">GitHub Apps can deploy, make CI/CD changes, and modify code. We probably want all three for the loop to work — but we should be deliberate about the install-time consent screen and what we promise not to touch (e.g. unrelated branches, secrets).</p>
+      <div>
+        <p class="qt">How permissive should the GitHub App be on install?</p>
+        <p class="qd">The loop needs deploy + CI/CD + code. We want all three. But the install-time consent screen is also the first impression — we should be deliberate about what we promise <strong>not</strong> to touch (unrelated branches, secrets, other repos).</p>
       </div>
     </div>
 
     <div class="qrow">
       <span class="qn">Q2</span>
-      <div class="qbody">
-        <p class="qt">If a user later wants to leave Kite, what does a clean exit look like?</p>
-        <p class="qd">GitHub is the export surface, but if Kite has been the runtime, the user is also leaving the build/preview/deploy layer. We should know our answer before we onboard the first paying customer, not after.</p>
+      <div>
+        <p class="qt">What does a clean exit from Kite look like?</p>
+        <p class="qd">GitHub is the export surface, but if Kite has been the runtime, the user is also leaving build/preview/deploy. We should know our answer before the first paying customer, not after the first churn email.</p>
       </div>
     </div>
 
     <div class="qrow">
       <span class="qn">Q3</span>
-      <div class="qbody">
-        <p class="qt">How do we handle a change that genuinely spans multiple repos?</p>
-        <p class="qd">v1 says no, but real marketing sites sometimes touch a content repo and a code repo. Worth knowing whether we defer this to v2 or whether the loop should accept it from the start, even if the UX is rougher.</p>
+      <div>
+        <p class="qt">Where does the credit card actually sit in the funnel?</p>
+        <p class="qd">Current draft: pre-analysis → report → card → GitHub → verification → charge. We should validate that asking for the card <em>before</em> the GitHub install doesn't kill conversion for the marketer persona — Devan, specifically.</p>
       </div>
     </div>
 
     <div class="qrow">
       <span class="qn">Q4</span>
-      <div class="qbody">
-        <p class="qt">Where does the credit-card step actually go in the funnel?</p>
-        <p class="qd">Current draft: pre-analysis → analysis report → credit card → connect GitHub → in-depth verification → charge. We should validate that "ask for the card before the GitHub install" doesn't kill conversion for the marketer persona.</p>
+      <div>
+        <p class="qt">When a real change spans multiple repos, do we defer or absorb?</p>
+        <p class="qd">v1 says one repo per thread. Real marketing sites sometimes touch a content repo and a code repo. Worth a position before Priya hits it in week three.</p>
       </div>
     </div>
 
   </section>
 
-  <!-- Footer -->
   <div class="footer">
-    <span class="attr">Kite AI CMO · product direction · drafted by Subhrashis · based on discussion with Arpit, Abhishek, Nikhil, Vinay, Vivek.</span>
-    <span>v0.1 · 2026-05-25</span>
+    <span class="attr">Kite AI CMO · user stories &amp; direction · drafted by Subhrashis · with Arpit, Abhishek, Nikhil, Vinay, Vivek.</span>
+    <span>v0.2 · 2026-05-25</span>
   </div>
 
 </div>
