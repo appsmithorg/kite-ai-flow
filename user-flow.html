@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kite AI — Onboarding flow, where users drop off</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #fafaf6;
+    --bg-2:      #f4f2eb;
+    --panel:     #ffffff;
+
+    --ink:       #0a0a0a;
+    --text:      #1a1a1a;
+    --text-2:    #4a4a4a;
+    --muted:     #8a8a8a;
+    --faint:     #c9c9c9;
+
+    --border:    #e8e5dc;
+    --border-2:  #d8d4c8;
+    --border-3:  #b9b4a4;
+
+    --dot:       rgba(0,0,0,0.045);
+
+    --green:      #047857;
+    --green-soft: #ecfdf5;
+    --green-tint: #d1fae5;
+    --green-line: #6ee7b7;
+
+    --amber:      #a16207;
+    --amber-soft: #fefce8;
+    --amber-line: #fcd34d;
+
+    --red:        #b91c1c;
+    --red-soft:   #fef2f2;
+    --red-line:   #fca5a5;
+
+    --blue:       #1d4ed8;
+    --blue-soft:  #eff6ff;
+    --blue-line:  #93c5fd;
+
+    --gold:       #92400e;
+    --gold-soft:  #fffbeb;
+    --gold-tint:  #fef3c7;
+    --gold-line:  #f59e0b;
+
+    --shadow-sm:  0 1px 0 rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:  0 1px 0 rgba(0,0,0,0.02), 0 6px 18px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.011em;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  ::selection { background: var(--gold-tint); color: var(--ink); }
+
+  /* Topbar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .mark {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    background: var(--ink);
+    display: grid; place-items: center;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 6px 14px rgba(0,0,0,0.12);
+    position: relative; overflow: hidden;
+  }
+  .mark::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.18), transparent 40%);
+  }
+  .mark svg { width: 18px; height: 18px; color: #fff; position: relative; z-index: 1; }
+  .brand-text .t { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand-text .s {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 30px; padding: 0 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px; color: var(--text-2);
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+  }
+  .chip .live {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 3px var(--red-soft);
+  }
+
+  /* Hero */
+  .hero {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .eyebrow::before { content: ""; width: 14px; height: 1px; background: var(--text-2); }
+  h1 {
+    margin: 0;
+    font-family: 'Fraunces', 'Inter', serif;
+    font-size: 46px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    color: var(--ink);
+  }
+  h1 em { font-style: italic; color: var(--red); font-weight: 500; }
+  .dek {
+    margin: 18px 0 0;
+    color: var(--text-2);
+    font-size: 14.5px;
+    max-width: 720px;
+    line-height: 1.65;
+  }
+  .dek strong { color: var(--ink); font-weight: 600; }
+
+  /* ====== Flow diagram ====== */
+  .flow-wrap {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 24px;
+  }
+  .flow-head {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .flow-title {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .flow-title::before {
+    content: ""; width: 4px; height: 12px;
+    background: var(--ink); border-radius: 1px;
+  }
+  .flow-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Two-row grid: A→B→C on top, D→E→F on bottom */
+  .flow-row {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr 32px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  .flow-bridge {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: end;
+    padding: 14px 0;
+  }
+  .flow-bridge .down-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--muted);
+    padding-right: 24px;
+  }
+  .node {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    position: relative;
+    transition: transform .15s ease;
+  }
+  .node[data-s="a"] { background: var(--blue-soft);  border-color: var(--blue-line); }
+  .node[data-s="b"] { background: var(--gold-soft);  border-color: var(--gold-line); }
+  .node[data-s="c"] { background: var(--amber-soft); border-color: var(--amber-line); }
+  .node[data-s="d"] { background: var(--green-soft); border-color: var(--green-line); }
+  .node[data-s="e"] { background: var(--bg-2);       border-color: var(--border-3); }
+  .node[data-s="f"] { background: var(--ink);        border-color: var(--ink); color: #fff; }
+
+  .node-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .node-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .node[data-s="f"] .node-letter { color: #fff; }
+  .node-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: 0.04em;
+  }
+  .node[data-s="f"] .node-pct { color: rgba(255,255,255,0.85); }
+  .node-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .node[data-s="f"] .node-name { color: #fff; }
+  .node-sub {
+    font-size: 11.5px;
+    color: var(--text-2);
+    line-height: 1.45;
+  }
+  .node[data-s="f"] .node-sub { color: rgba(255,255,255,0.75); }
+
+  .arrow {
+    display: grid; place-items: center;
+    color: var(--muted);
+    font-size: 22px;
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 820px) {
+    .flow-row { grid-template-columns: 1fr; gap: 8px; }
+    .arrow { display: none; }
+    .flow-bridge { display: none; }
+  }
+
+  /* ====== Funnel bar ====== */
+  .funnel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .funnel-bar {
+    display: flex;
+    height: 38px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+    margin-bottom: 14px;
+  }
+  .fseg {
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    transition: filter .15s ease;
+  }
+  .fseg:hover { filter: brightness(1.05); }
+  .fseg.a { background: var(--blue);  }
+  .fseg.b { background: var(--gold);  }
+  .fseg.c { background: var(--amber); }
+  .fseg.d { background: var(--green); }
+  .fseg.e { background: #525252; }
+  .fseg.f { background: var(--ink);   }
+  .fseg.lost { background: var(--red-soft); color: var(--red); }
+  .funnel-legend {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    font-size: 11.5px;
+    color: var(--text-2);
+  }
+  .funnel-legend .leg {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .funnel-legend .sw {
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .funnel-legend .leg.a .sw { background: var(--blue);  }
+  .funnel-legend .leg.b .sw { background: var(--gold);  }
+  .funnel-legend .leg.c .sw { background: var(--amber); }
+  .funnel-legend .leg.d .sw { background: var(--green); }
+  .funnel-legend .leg.e .sw { background: #525252; }
+  .funnel-legend .leg.f .sw { background: var(--ink);   }
+
+  /* ====== Section header ====== */
+  .section-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 18px;
+    margin: 36px 0 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 8px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    color: var(--ink);
+  }
+  .section-head h2 em { font-style: italic; color: var(--red); font-weight: 500; }
+  .section-head p {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+  .section-head p strong { color: var(--ink); font-weight: 600; }
+  .section-head .right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  /* ====== Step detail cards ====== */
+  .steps {
+    display: flex; flex-direction: column;
+    gap: 16px;
+  }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .step::before {
+    content: "";
+    position: absolute; top: 0; left: 0; bottom: 0;
+    width: 4px;
+  }
+  .step[data-s="a"]::before { background: linear-gradient(180deg, var(--blue)  0%, var(--blue-line)  100%); }
+  .step[data-s="b"]::before { background: linear-gradient(180deg, var(--gold)  0%, var(--gold-line)  100%); }
+  .step[data-s="c"]::before { background: linear-gradient(180deg, var(--amber) 0%, var(--amber-line) 100%); }
+  .step[data-s="d"]::before { background: linear-gradient(180deg, var(--green) 0%, var(--green-line) 100%); }
+  .step[data-s="e"]::before { background: linear-gradient(180deg, #525252 0%, #999 100%); }
+  .step[data-s="f"]::before { background: linear-gradient(180deg, var(--ink) 0%, #555 100%); }
+
+  .step-head {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    gap: 22px;
+    align-items: start;
+    padding: 22px 26px 16px;
+  }
+  .step-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--faint);
+  }
+  .step[data-s="a"] .step-letter { color: var(--blue);  opacity: 0.55; }
+  .step[data-s="b"] .step-letter { color: var(--gold);  opacity: 0.55; }
+  .step[data-s="c"] .step-letter { color: var(--amber); opacity: 0.55; }
+  .step[data-s="d"] .step-letter { color: var(--green); opacity: 0.55; }
+  .step[data-s="e"] .step-letter { color: #555;         opacity: 0.55; }
+  .step[data-s="f"] .step-letter { color: var(--ink);   opacity: 0.55; }
+
+  .step-id { min-width: 0; }
+  .step-name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .step-desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+  .step-stats { text-align: right; line-height: 1.4; }
+  .step-stats .pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .step-stats .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+  }
+  .step-stats .drop {
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--red);
+    background: var(--red-soft);
+    border: 1px solid var(--red-line);
+    border-radius: 5px;
+    padding: 3px 8px;
+    display: inline-block;
+  }
+
+  .step-body {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    border-top: 1px solid var(--border);
+  }
+  .step-cell {
+    padding: 18px 26px 22px;
+  }
+  .step-cell.reasons { border-right: 1px solid var(--border); }
+  .step-cell .ck {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .step-cell.reasons .ck { color: var(--red); }
+  .step-cell.fixes   .ck { color: var(--green); }
+  .step-cell .ck .ic {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: currentColor;
+    color: #fff;
+    font-size: 8px;
+    display: inline-grid; place-items: center;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  .reason {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px dashed var(--border);
+    align-items: start;
+  }
+  .reason:first-child { border-top: none; padding-top: 0; }
+  .reason .rn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--red);
+    background: var(--red-soft);
+    border: 1px solid var(--red-line);
+    border-radius: 5px;
+    padding: 2px 0;
+    text-align: center;
+    letter-spacing: 0.04em;
+    height: 22px;
+    line-height: 18px;
+  }
+  .reason .rt {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .reason .rt strong { color: var(--ink); font-weight: 600; }
+  .reason .rt em {
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .fix {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    padding: 6px 0;
+    align-items: start;
+  }
+  .fix .ic {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    background: var(--green);
+    color: #fff;
+    display: inline-grid; place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    margin-top: 1px;
+  }
+  .fix .ft {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .fix .ft strong { color: var(--ink); font-weight: 600; }
+
+  @media (max-width: 820px) {
+    .step-body { grid-template-columns: 1fr; }
+    .step-cell.reasons { border-right: none; border-bottom: 1px solid var(--border); }
+    .step-head { grid-template-columns: 50px 1fr; }
+    .step-stats { grid-column: 1 / -1; text-align: left; padding-top: 8px; }
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .footer .attr { color: var(--text-2); }
+  .footer a { color: var(--text-2); text-decoration: none; border-bottom: 1px dashed var(--border-2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <a href="kite-direction.html" style="text-decoration:none; display:flex; align-items:center; gap:14px; color:inherit;">
+        <div class="mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 L19 9 L12 22 L5 9 Z"/>
+            <line x1="12" y1="2" x2="12" y2="22"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="t">Kite AI CMO</div>
+          <div class="s">onboarding-flow / v0.1</div>
+        </div>
+      </a>
+    </div>
+    <a class="chip" href="kite-direction.html"><span class="live"></span> ← strategy + product</a>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">Onboarding flow · 6 steps · where users drop off</div>
+    <h1>A → B → C → D → E → F.<br><em>And why people leave</em> at each one.</h1>
+    <p class="dek">The funnel for a new customer landing on Kite, end-to-end: from URL submission to first paid conversion. Each step has a job, a survival rate, and a reason people drop. The colours below match the funnel bar: <strong>blue → gold → amber → green → grey → ink</strong>, with red wedges showing what's been lost.</p>
+  </div>
+
+  <!-- ====== FLOW DIAGRAM ====== -->
+  <div class="flow-wrap">
+    <div class="flow-head">
+      <div class="flow-title">The flow</div>
+      <div class="flow-meta">2 rows · 6 nodes · 5 drop-off cliffs</div>
+    </div>
+
+    <!-- Row 1: A → B → C -->
+    <div class="flow-row">
+      <div class="node" data-s="a">
+        <div class="node-head">
+          <div class="node-letter">A</div>
+          <div class="node-pct">100%</div>
+        </div>
+        <div class="node-name">Pre-analysis</div>
+        <div class="node-sub">User pastes their URL. Kite checks if the site is something it can manage.</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node" data-s="b">
+        <div class="node-head">
+          <div class="node-letter">B</div>
+          <div class="node-pct">62%</div>
+        </div>
+        <div class="node-name">Analysis report</div>
+        <div class="node-sub">Kite shows what it found, previews a fix on one section, asks the user to react.</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node" data-s="c">
+        <div class="node-head">
+          <div class="node-letter">C</div>
+          <div class="node-pct">41%</div>
+        </div>
+        <div class="node-name">Sign up</div>
+        <div class="node-sub">Email + verify. Free. No card. This is the trial gate, not the paid gate.</div>
+      </div>
+    </div>
+
+    <!-- Bridge: C goes down to D (right-to-left flow on row 2) -->
+    <div class="flow-bridge">
+      <div class="down-arrow">↓</div>
+    </div>
+
+    <!-- Row 2: D → E → F -->
+    <div class="flow-row">
+      <div class="node" data-s="d">
+        <div class="node-head">
+          <div class="node-letter">D</div>
+          <div class="node-pct">26%</div>
+        </div>
+        <div class="node-name">GitHub App install</div>
+        <div class="node-sub">User installs Kite on the site repo. Trial begins in <strong>PR-only mode</strong> — no infra moves.</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node" data-s="e">
+        <div class="node-head">
+          <div class="node-letter">E</div>
+          <div class="node-pct">17%</div>
+        </div>
+        <div class="node-name">First PR shipped</div>
+        <div class="node-sub">Kite proposes a change, user approves, their team merges. Loop runs once end-to-end.</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node" data-s="f">
+        <div class="node-head">
+          <div class="node-letter">F</div>
+          <div class="node-pct">9%</div>
+        </div>
+        <div class="node-name">Charge · full takeover</div>
+        <div class="node-sub">Card on file, in-depth verification, graduate from PR-only to Kite-owned runtime.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== FUNNEL BAR ====== -->
+  <div class="funnel">
+    <div class="flow-head" style="margin-bottom: 4px;">
+      <div class="flow-title">Survival at each step</div>
+      <div class="flow-meta">illustrative · pre-data baseline</div>
+    </div>
+    <div class="funnel-bar">
+      <div class="fseg a" style="width: 9%;">A · 100</div>
+      <div class="fseg b" style="width: 9%;">B · 62</div>
+      <div class="fseg c" style="width: 9%;">C · 41</div>
+      <div class="fseg d" style="width: 9%;">D · 26</div>
+      <div class="fseg e" style="width: 9%;">E · 17</div>
+      <div class="fseg f" style="width: 9%;">F · 9</div>
+      <div class="fseg lost" style="width: 46%;">91% · lost across the funnel</div>
+    </div>
+    <div class="funnel-legend">
+      <span class="leg a"><span class="sw"></span>A · Pre-analysis</span>
+      <span class="leg b"><span class="sw"></span>B · Report</span>
+      <span class="leg c"><span class="sw"></span>C · Sign up</span>
+      <span class="leg d"><span class="sw"></span>D · GitHub install</span>
+      <span class="leg e"><span class="sw"></span>E · First PR</span>
+      <span class="leg f"><span class="sw"></span>F · Charge</span>
+    </div>
+  </div>
+
+  <!-- ====== SECTION: detailed drop-off reasons ====== -->
+  <div class="section-head">
+    <div>
+      <div class="kicker">Step-by-step</div>
+      <h2>Why they drop, ranked. <em>And what we'd do about it.</em></h2>
+      <p>Three reasons per step, ordered by how often we expect them. The right column is the cheapest mitigation that doesn't break the rest of the funnel. Numbers are <strong>pre-data estimates</strong> — replace them with real values after the first 100 sign-ups.</p>
+    </div>
+    <div class="right">6 steps<br>18 reasons<br>12 mitigations</div>
+  </div>
+
+  <div class="steps">
+
+    <!-- STEP A -->
+    <article class="step" data-s="a">
+      <div class="step-head">
+        <div class="step-letter">A</div>
+        <div class="step-id">
+          <h3 class="step-name">Pre-analysis · "Paste your URL"</h3>
+          <p class="step-desc">User lands on kite.ai, pastes a URL. Kite fetches the site, identifies the stack, decides whether it can credibly manage it.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">100%</div>
+          <div class="lbl">Entering</div>
+          <div class="drop">−38% to next</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">A1</span>
+            <div class="rt"><strong>Unsupported stack.</strong> The URL is a WordPress, Wix, Squarespace, or Webflow site. Kite returns "we can't manage this yet." <em>~22% of pastes</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">A2</span>
+            <div class="rt"><strong>Auth-walled or staged URL.</strong> The site is behind a login or only exists on a staging domain Kite can't reach. <em>~11% of pastes</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">A3</span>
+            <div class="rt"><strong>Curiosity-only.</strong> User pasted to see what Kite does, never had intent to act. Bounces before the analysis finishes. <em>~5% of pastes</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>"Not yet" with a waitlist.</strong> For unsupported stacks, capture email + framework. Don't end the journey — convert the no into a signal for what to support next.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Manual URL override.</strong> Let the user paste a public preview URL, a Vercel deployment, or a GitHub raw link — anything Kite can crawl.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>Streaming analysis.</strong> Show partial results before the full scan completes — keeps curious pasters from bouncing.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STEP B -->
+    <article class="step" data-s="b">
+      <div class="step-head">
+        <div class="step-letter">B</div>
+        <div class="step-id">
+          <h3 class="step-name">Analysis report · "Here's what we'd do"</h3>
+          <p class="step-desc">Kite shows what it found, previews one improvement on a specific section of the site, and asks the user to sign up to see the rest.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">62%</div>
+          <div class="lbl">Surviving</div>
+          <div class="drop">−34% to next</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">B1</span>
+            <div class="rt"><strong>Findings feel obvious.</strong> Kite returns generic suggestions ("optimise images, add OG tags") the user has seen in every Lighthouse report. No wow moment. <em>~18%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">B2</span>
+            <div class="rt"><strong>Findings feel wrong.</strong> Kite misreads the site (calls a B2B SaaS landing a "personal portfolio"), loses credibility before the sign-up button. <em>~10%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">B3</span>
+            <div class="rt"><strong>"I'll come back."</strong> User is impressed but not in build-mode right now. Closes the tab intending to return. Doesn't. <em>~6%</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>One specific, non-obvious finding.</strong> Surface something the user couldn't have found with a free tool — a competitor pattern, a copywriting weakness, a structural opportunity.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Live preview of one fix.</strong> Don't tell — show. Render the proposed change on a Kite preview URL the user can click into immediately, before any sign-up.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>Magic-link return path.</strong> Email the report + preview link to the user. If they don't sign up, they still have a way back in.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STEP C -->
+    <article class="step" data-s="c">
+      <div class="step-head">
+        <div class="step-letter">C</div>
+        <div class="step-id">
+          <h3 class="step-name">Sign up · email &amp; verify</h3>
+          <p class="step-desc">Free account, no card. The trial wedge starts here — but only commits when the GitHub App is installed in step D.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">41%</div>
+          <div class="lbl">Surviving</div>
+          <div class="drop">−37% to next</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">C1</span>
+            <div class="rt"><strong>Wrong person at the keyboard.</strong> A marketer signs up but realises they can't actually install a GitHub App on the site repo without VP-Eng approval. Stalls. <em>~22%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">C2</span>
+            <div class="rt"><strong>"Why do you need my email?"</strong> Friction at the email-verification step from users who already saw what Kite can do and feel the gate is unjustified. <em>~9%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">C3</span>
+            <div class="rt"><strong>Personal vs work email.</strong> User signs up with personal email, then can't connect a GitHub account tied to their work org. Loops back, gives up. <em>~6%</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>"Loop in your engineer" path.</strong> Mid-flow, let the marketer email a one-click magic link to their VP-Eng with the install pre-approval flow on the other end.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Google / GitHub SSO first.</strong> Skip email-verify for users who can SSO. Reduces the C2 friction without breaking the C3 case.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>Account-mismatch detection.</strong> If the user signs up with personal email but the URL belongs to a work org, surface the mismatch before they get to D.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STEP D -->
+    <article class="step" data-s="d">
+      <div class="step-head">
+        <div class="step-letter">D</div>
+        <div class="step-id">
+          <h3 class="step-name">GitHub App install · trial begins</h3>
+          <p class="step-desc">User installs the Kite App on the site repo. Trial runs in <strong>PR-only mode</strong> — no infra moves, easy exit. The first 14 days.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">26%</div>
+          <div class="lbl">Surviving</div>
+          <div class="drop">−35% to next</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">D1</span>
+            <div class="rt"><strong>Platform lead refuses install.</strong> VP-Eng won't approve a third-party GitHub App with deploy-adjacent permissions on the production repo. <em>~20% — the load-bearing risk from v0.4</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">D2</span>
+            <div class="rt"><strong>Permission scope feels too broad.</strong> Marketer sees the consent screen, doesn't understand half the scopes, declines on instinct. <em>~9%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">D3</span>
+            <div class="rt"><strong>"I just wanted to look."</strong> The install is a real commitment. Users who hadn't decided to act bail right here. <em>~6%</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>Minimum-viable permission set.</strong> Trial mode only needs <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg-2);border:1px solid var(--border);padding:0 4px;border-radius:3px;">contents:read</code> + <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg-2);border:1px solid var(--border);padding:0 4px;border-radius:3px;">pull_requests:write</code>. Show that. Defer the deploy scopes until step F.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Plain-English scope explainer.</strong> Inline annotations on the consent screen — "this lets Kite read your code" / "this lets Kite open PRs" — no GitHub jargon.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>"Try on a sample repo" escape hatch.</strong> Let hesitant users see the PR-only loop on a public sample repo before pointing it at their own.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STEP E -->
+    <article class="step" data-s="e">
+      <div class="step-head">
+        <div class="step-letter">E</div>
+        <div class="step-id">
+          <h3 class="step-name">First PR shipped · loop completes once</h3>
+          <p class="step-desc">User asks Kite for a change. Kite proposes it. Their team reviews and merges. The PR-only loop has run end-to-end for the first time.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">17%</div>
+          <div class="lbl">Surviving</div>
+          <div class="drop">−47% to next</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">E1</span>
+            <div class="rt"><strong>Engineers reject the PR.</strong> Kite's diff isn't in the team's house style — wrong import ordering, wrong component pattern, touched files it shouldn't have. PR sits, then closes. <em>~5%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">E2</span>
+            <div class="rt"><strong>No change worth asking for.</strong> Trial expires before the user has a real ask. They tried Kite without a job to give it. <em>~3%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">E3</span>
+            <div class="rt"><strong>Repo too complex.</strong> Custom monorepo, exotic Webpack config, half-finished migration. Kite can't form a coherent plan. <em>~1%</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>"Style match" pass.</strong> Before opening any PR, run a style/convention pass against the repo's recent merged commits. Match — don't impose.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Trial activation nudge.</strong> If 7 days pass without a single ask, surface 3 specific, repo-aware suggestions Kite can ship immediately.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>Complexity gate at D, not E.</strong> Catch unmanageable repos at install time and warn the user — better than failing silently in step E.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- STEP F -->
+    <article class="step" data-s="f">
+      <div class="step-head">
+        <div class="step-letter">F</div>
+        <div class="step-id">
+          <h3 class="step-name">Charge · full takeover activation</h3>
+          <p class="step-desc">Card on file, in-depth verification, scope-expansion consent. The user graduates from PR-only to Kite-owned runtime — and we charge.</p>
+        </div>
+        <div class="step-stats">
+          <div class="pct">9%</div>
+          <div class="lbl">Surviving</div>
+          <div class="drop" style="color:var(--green); background: var(--green-soft); border-color: var(--green-line);">Paid customer</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-cell reasons">
+          <div class="ck"><span class="ic">!</span>Why they drop</div>
+          <div class="reason">
+            <span class="rn">F1</span>
+            <div class="rt"><strong>"PR-only is enough."</strong> The trial was useful, but the snap-speed wow isn't worth the lock-in step. They stay on free PR-only forever — or churn. <em>~4%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">F2</span>
+            <div class="rt"><strong>Verification finds blockers.</strong> Kite discovers "extras" (custom auth, CMS hooks, A/B service, edge configs) it can't replicate. The full-takeover promise breaks. <em>~3%</em></div>
+          </div>
+          <div class="reason">
+            <span class="rn">F3</span>
+            <div class="rt"><strong>Price shock.</strong> Trial was free; full takeover pricing is the first dollar amount the user sees, and it doesn't match the value they perceive. <em>~1%</em></div>
+          </div>
+        </div>
+        <div class="step-cell fixes">
+          <div class="ck"><span class="ic">✓</span>What we do about it</div>
+          <div class="fix">
+            <span class="ic">A</span>
+            <div class="ft"><strong>Make the snap-speed visible during trial.</strong> Show a "what changes when you upgrade" comparison inside trial — same change, with and without Kite-owned deploy. Time saved in seconds, not slogans.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">B</span>
+            <div class="ft"><strong>Pre-flight verification before billing.</strong> Run the "can we actually own this runtime" check as the <em>first</em> step of conversion, not the last. Refund-protect users whose extras can't be replicated.</div>
+          </div>
+          <div class="fix">
+            <span class="ic">C</span>
+            <div class="ft"><strong>Show price after value is felt.</strong> Surface pricing tied to the actual changes shipped during trial ("you saved 6 engineering hours · cost would have been $X") — not as an abstract plan grid.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="attr">Kite AI CMO · onboarding flow &amp; drop-off analysis · 25 May 2026 · companion: <a href="kite-direction.html">kite-direction.html</a></span>
+    <span>v0.1 · pre-data estimates · replace after first 100 sign-ups</span>
+  </div>
+
+</div>
+</body>
+</html>
