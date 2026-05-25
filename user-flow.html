@@ -6,7 +6,12 @@
 <title>Kite AI — The flow, end-to-end</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- GSAP via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
 <style>
   :root {
     --bg:        #fafaf6;
@@ -32,17 +37,22 @@
     --red-soft:   #fef2f2;
     --red-line:   #fca5a5;
     --blue:       #1d4ed8;
+    --blue-bright:#2563eb;
     --blue-soft:  #eff6ff;
     --blue-line:  #93c5fd;
     --gold:       #92400e;
+    --gold-bright:#d97706;
     --gold-soft:  #fffbeb;
     --gold-tint:  #fef3c7;
     --gold-line:  #f59e0b;
     --shadow-sm:  0 1px 0 rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md:  0 1px 0 rgba(0,0,0,0.02), 0 6px 18px rgba(0,0,0,0.05);
+    --shadow-md:  0 1px 0 rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-lg:  0 1px 0 rgba(0,0,0,0.02), 0 20px 60px rgba(0,0,0,0.08);
+    --glow-gold:  0 0 0 0 rgba(245,158,11,0.4);
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -53,7 +63,9 @@
     letter-spacing: -0.011em;
     position: relative;
     overflow-x: hidden;
+    min-height: 100vh;
   }
+  /* Dot pattern */
   body::before {
     content: "";
     position: fixed; inset: 0;
@@ -64,20 +76,53 @@
     pointer-events: none;
     z-index: 0;
   }
+  /* Mesh gradient blobs */
+  .meshbg {
+    position: fixed; inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .blob {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.22;
+    animation: drift 20s ease-in-out infinite;
+  }
+  .blob.b1 { background: var(--gold-line); top: -200px;  left: -200px; animation-delay: 0s; }
+  .blob.b2 { background: var(--blue-line); bottom: 0;    right: -200px; animation-delay: -7s; }
+  .blob.b3 { background: var(--green-line); top: 40%;    left: 40%;     animation-delay: -14s; opacity: 0.15; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50%      { transform: translate(80px, -60px) scale(1.15); }
+  }
+
   .wrap {
     position: relative; z-index: 1;
-    max-width: 1180px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 32px 24px 80px;
   }
   ::selection { background: var(--gold-tint); color: var(--ink); }
 
-  /* Topbar */
+  /* ====== Topbar ====== */
   .topbar {
+    position: sticky;
+    top: 16px;
+    z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 40px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
   }
-  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
   .mark {
     width: 36px; height: 36px;
     border-radius: 9px;
@@ -91,190 +136,580 @@
     background: linear-gradient(160deg, rgba(255,255,255,0.18), transparent 40%);
   }
   .mark svg { width: 18px; height: 18px; color: #fff; position: relative; z-index: 1; }
-  .brand-text .t { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand-text .t { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
   .brand-text .s {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--muted);
-    margin-top: 2px;
+    margin-top: 1px;
   }
   .chip {
     display: inline-flex; align-items: center; gap: 7px;
-    height: 30px; padding: 0 12px;
+    height: 32px; padding: 0 14px;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 12px; color: var(--text-2);
+    border-radius: 9px;
+    font-size: 12.5px; color: var(--text-2);
     font-weight: 500;
-    box-shadow: var(--shadow-sm);
     text-decoration: none;
+    transition: all .2s ease;
   }
+  .chip:hover { background: #fff; border-color: var(--border-2); transform: translateY(-1px); }
   .chip .live {
-    width: 6px; height: 6px; border-radius: 50%;
+    width: 7px; height: 7px; border-radius: 50%;
     background: var(--gold-line);
     box-shadow: 0 0 0 3px var(--gold-tint);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 3px var(--gold-tint); }
+    50%      { box-shadow: 0 0 0 6px var(--gold-soft); }
   }
 
-  /* Hero */
-  .hero {
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
+  /* ====== Hero ====== */
+  .hero { margin-bottom: 32px; }
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    margin-bottom: 14px;
-    display: inline-flex; align-items: center; gap: 8px;
+    letter-spacing: 0.18em;
+    margin-bottom: 16px;
+    display: inline-flex; align-items: center; gap: 10px;
   }
-  .eyebrow::before { content: ""; width: 14px; height: 1px; background: var(--text-2); }
+  .eyebrow::before {
+    content: ""; width: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--text-2));
+  }
   h1 {
     margin: 0;
     font-family: 'Fraunces', 'Inter', serif;
-    font-size: 50px;
+    font-size: clamp(38px, 6vw, 64px);
     font-weight: 500;
-    letter-spacing: -0.032em;
-    line-height: 1.02;
+    letter-spacing: -0.034em;
+    line-height: 1.0;
     color: var(--ink);
   }
-  h1 em { font-style: italic; color: var(--gold); font-weight: 500; }
+  h1 .gold { color: var(--gold-bright); font-style: italic; font-weight: 500; }
+  h1 .blue { color: var(--blue);        font-style: italic; font-weight: 500; }
+  h1 .light { color: var(--faint); font-weight: 500; }
+
+  .reveal { opacity: 0; transform: translateY(20px); }
+  .reveal.in { opacity: 1; transform: translateY(0); transition: opacity .8s ease, transform .8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
   .dek {
-    margin: 18px 0 0;
+    margin: 22px 0 0;
     color: var(--text-2);
-    font-size: 14.5px;
-    max-width: 760px;
+    font-size: 15px;
+    max-width: 780px;
     line-height: 1.65;
   }
   .dek strong { color: var(--ink); font-weight: 600; }
-
-  /* Decision summary - "top two buttons" */
-  .twobtns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 22px;
+  .dek .pill-gold {
+    color: var(--gold); background: var(--gold-tint);
+    padding: 1px 8px; border-radius: 5px; font-weight: 600;
+    border: 1px solid var(--gold-line);
   }
-  .twobtn {
+  .dek .pill-blue {
+    color: var(--blue); background: var(--blue-soft);
+    padding: 1px 8px; border-radius: 5px; font-weight: 600;
+    border: 1px solid var(--blue-line);
+  }
+
+  /* ====== KPI strip ====== */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .kpi {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 18px 22px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
   }
+  .kpi::after {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border);
+  }
+  .kpi.k-gold::after { background: linear-gradient(90deg, var(--gold-line), transparent); }
+  .kpi.k-blue::after { background: linear-gradient(90deg, var(--blue-line), transparent); }
+  .kpi.k-red::after  { background: linear-gradient(90deg, var(--red-line),  transparent); }
+  .kpi.k-ink::after  { background: linear-gradient(90deg, var(--ink),       transparent); }
+
+  .kpi-n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .kpi-n .suffix { font-size: 16px; color: var(--muted); font-weight: 500; }
+  .kpi.k-gold .kpi-n { color: var(--gold-bright); }
+  .kpi.k-blue .kpi-n { color: var(--blue);        }
+  .kpi.k-red  .kpi-n { color: var(--red);         }
+  .kpi-l {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+  .kpi-d {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  @media (max-width: 800px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ====== Top two buttons (3D tilt) ====== */
+  .twobtns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 28px;
+    perspective: 1200px;
+  }
+  .twobtn {
+    position: relative;
+    border-radius: 18px;
+    padding: 24px 26px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform .25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .25s ease;
+    cursor: default;
+    will-change: transform;
+  }
   .twobtn.gold {
-    background: linear-gradient(135deg, var(--gold-soft) 0%, var(--gold-tint) 100%);
+    background:
+      radial-gradient(at 0% 0%, rgba(245,158,11,0.22), transparent 50%),
+      linear-gradient(135deg, var(--gold-soft) 0%, var(--gold-tint) 100%);
     border: 1px solid var(--gold-line);
+    box-shadow: var(--shadow-sm);
   }
   .twobtn.blue {
-    background: linear-gradient(135deg, var(--blue-soft) 0%, #dbeafe 100%);
+    background:
+      radial-gradient(at 100% 0%, rgba(29,78,216,0.18), transparent 50%),
+      linear-gradient(135deg, var(--blue-soft) 0%, #dbeafe 100%);
     border: 1px solid var(--blue-line);
+    box-shadow: var(--shadow-sm);
+  }
+  .twobtn:hover {
+    box-shadow: var(--shadow-lg);
   }
   .twobtn::before {
     content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
   }
-  .twobtn.gold::before { background: var(--gold-line); }
-  .twobtn.blue::before { background: var(--blue); }
+  .twobtn.gold::before { background: linear-gradient(90deg, var(--gold-line), var(--gold-bright)); }
+  .twobtn.blue::before { background: linear-gradient(90deg, var(--blue),      var(--blue-bright)); }
+  .twobtn-content { transform: translateZ(40px); }
+  .twobtn-glare {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.55) 0%, transparent 30%);
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+  }
+  .twobtn:hover .twobtn-glare { opacity: 0.9; }
   .twobtn-k {
+    display: inline-flex; align-items: center; gap: 8px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 10.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    margin-bottom: 4px;
+    letter-spacing: 0.18em;
+    margin-bottom: 6px;
+    padding: 4px 9px;
+    border-radius: 5px;
+    border: 1px solid currentColor;
   }
-  .twobtn.gold .twobtn-k { color: var(--gold); }
-  .twobtn.blue .twobtn-k { color: var(--blue); }
+  .twobtn.gold .twobtn-k { color: var(--gold); background: rgba(255,255,255,0.5); }
+  .twobtn.blue .twobtn-k { color: var(--blue); background: rgba(255,255,255,0.5); }
+  .twobtn-k .sw { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .twobtn h3 {
-    margin: 0 0 6px;
+    margin: 8px 0 8px;
     font-family: 'Fraunces', serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 500;
-    letter-spacing: -0.022em;
-    line-height: 1.2;
+    letter-spacing: -0.024em;
+    line-height: 1.18;
     color: var(--ink);
   }
   .twobtn p {
     margin: 0;
-    font-size: 13px;
+    font-size: 13.5px;
     color: var(--text-2);
-    line-height: 1.55;
+    line-height: 1.6;
   }
   .twobtn p strong { color: var(--ink); font-weight: 600; }
-  @media (max-width: 720px) {
-    .twobtns { grid-template-columns: 1fr; }
-    h1 { font-size: 36px; }
-  }
+  @media (max-width: 720px) { .twobtns { grid-template-columns: 1fr; } }
 
-  /* ====== FLOWCHART CONTAINER ====== */
+  /* ====== Flowchart stage ====== */
   .flow-stage {
-    background: var(--panel);
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 28px 24px 24px;
+    border-radius: 22px;
+    padding: 22px 22px 24px;
     box-shadow: var(--shadow-md);
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     position: relative;
     overflow: hidden;
   }
   .flow-head {
     display: flex; justify-content: space-between; align-items: center;
     gap: 14px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     padding-bottom: 14px;
     border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
   }
   .flow-title {
     display: flex; align-items: center; gap: 10px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--ink);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
   }
   .flow-title::before {
     content: ""; width: 4px; height: 12px;
     background: var(--ink); border-radius: 1px;
   }
+  /* Path filter toggle */
+  .filter-pills {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    background: var(--bg-2);
+    gap: 2px;
+  }
+  .filter-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 7px 12px;
+    border-radius: 7px;
+    color: var(--text-2);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all .2s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .filter-pill .sw {
+    width: 8px; height: 8px; border-radius: 2px;
+    background: var(--text-2);
+  }
+  .filter-pill[data-filter="gold"] .sw { background: var(--gold-line); }
+  .filter-pill[data-filter="blue"] .sw { background: var(--blue);      }
+  .filter-pill:hover { color: var(--ink); }
+  .filter-pill.active {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+
   .flow-legend {
     display: flex; align-items: center; gap: 14px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-2);
     flex-wrap: wrap;
   }
-  .leg {
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .leg-swatch {
-    display: inline-block;
-    width: 18px; height: 3px;
-    border-radius: 2px;
-  }
+  .leg { display: inline-flex; align-items: center; gap: 6px; }
+  .leg-swatch { display: inline-block; width: 18px; height: 3px; border-radius: 2px; }
   .leg-swatch.shared { background: var(--ink); }
-  .leg-swatch.gold   { background: var(--gold); }
+  .leg-swatch.gold   { background: var(--gold-line); }
   .leg-swatch.blue   { background: var(--blue); }
   .leg-swatch.drop   {
     background: repeating-linear-gradient(90deg, var(--red) 0 4px, transparent 4px 7px);
     height: 2px;
   }
 
-  /* Make SVG responsive */
-  .flowchart-svg {
+  /* SVG wrapper with horizontal scroll on small screens */
+  .svg-frame {
     width: 100%;
-    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+  }
+  .svg-frame::-webkit-scrollbar { height: 8px; }
+  .svg-frame::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 4px; }
+  .svg-frame::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+  .flowchart-svg {
     display: block;
+    width: 100%;
+    min-width: 720px;
+    height: auto;
     max-width: 100%;
   }
 
-  /* ====== Section header (reused) ====== */
+  /* ====== SVG styling ====== */
+  .track-shared { stroke: var(--ink);       stroke-width: 2.5; fill: none; }
+  .track-gold   { stroke: var(--gold-line); stroke-width: 3;   fill: none; }
+  .track-blue   { stroke: var(--blue);      stroke-width: 3;   fill: none; }
+  .track-drop   { stroke: var(--red);       stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+
+  /* Path-draw entry animation */
+  .draw-on-load {
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+  }
+
+  /* Continuous pulse along tracks (overlay paths) */
+  .pulse-shared, .pulse-gold, .pulse-blue {
+    fill: none;
+    stroke-width: 5;
+    stroke-linecap: round;
+    opacity: 0.95;
+    pointer-events: none;
+  }
+  .pulse-shared {
+    stroke: var(--ink);
+    stroke-dasharray: 14 3000;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.25));
+    animation: pulse-flow-shared 6s linear infinite;
+  }
+  .pulse-gold {
+    stroke: var(--gold-bright);
+    stroke-dasharray: 14 3000;
+    filter: drop-shadow(0 0 8px rgba(245,158,11,0.7));
+    animation: pulse-flow-gold 6s linear infinite;
+  }
+  .pulse-blue {
+    stroke: var(--blue-bright);
+    stroke-dasharray: 14 3000;
+    filter: drop-shadow(0 0 8px rgba(37,99,235,0.6));
+    animation: pulse-flow-blue 6s linear infinite;
+  }
+  .pulse-shared.delay-1 { animation-delay: -2s; }
+  .pulse-shared.delay-2 { animation-delay: -4s; }
+  .pulse-gold.delay-1   { animation-delay: -3s; }
+  .pulse-blue.delay-1   { animation-delay: -3s; }
+
+  @keyframes pulse-flow-shared {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -3014; }
+  }
+  @keyframes pulse-flow-gold {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -3014; }
+  }
+  @keyframes pulse-flow-blue {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -3014; }
+  }
+
+  /* Stations */
+  .station-card { fill: #fff; stroke: var(--border-2); stroke-width: 1; }
+  .station-card.decision { fill: var(--gold-soft);  stroke: var(--gold-line); stroke-width: 1.5; }
+  .station-card.decision-big {
+    fill: var(--gold-tint);
+    stroke: var(--gold-line);
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 24px rgba(245,158,11,0.35));
+  }
+  .station-card.gold-path { fill: var(--gold-soft); stroke: var(--gold-line); }
+  .station-card.blue-path { fill: var(--blue-soft); stroke: var(--blue-line); }
+  .station-card.terminus-gold { fill: var(--gold-bright); stroke: var(--gold); filter: drop-shadow(0 4px 12px rgba(245,158,11,0.4)); }
+  .station-card.terminus-blue { fill: var(--blue-bright); stroke: var(--blue); filter: drop-shadow(0 4px 12px rgba(37,99,235,0.4)); }
+  .station-card.drop-card { fill: var(--red-soft); stroke: var(--red-line); }
+
+  .dot-shared { fill: #fff; stroke: var(--ink); stroke-width: 2.5; }
+  .dot-gold   { fill: #fff; stroke: var(--gold-line); stroke-width: 3; }
+  .dot-blue   { fill: #fff; stroke: var(--blue); stroke-width: 3; }
+  .dot-decision { fill: var(--gold-line); stroke: var(--gold); stroke-width: 2.5; }
+  .dot-decision-big {
+    fill: var(--gold-bright);
+    stroke: var(--gold); stroke-width: 4;
+    filter: drop-shadow(0 0 12px rgba(245,158,11,0.6));
+    animation: pulse-big 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-big {
+    0%, 100% { transform-origin: center; transform: scale(1); }
+    50%      { transform: scale(1.12); }
+  }
+  .dot-terminus-gold { fill: #fff; stroke: var(--gold); stroke-width: 4; }
+  .dot-terminus-blue { fill: #fff; stroke: var(--blue); stroke-width: 4; }
+
+  .flowchart-svg text { font-family: 'Inter', sans-serif; }
+  .lbl-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    fill: var(--muted);
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  .lbl-name {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .lbl-sub {
+    font-size: 11px;
+    fill: var(--text-2);
+  }
+  .lbl-decision {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    fill: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .lbl-decision-big {
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    font-weight: 600;
+    fill: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .lbl-decision-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+  }
+  .lbl-drop {
+    font-size: 11px;
+    fill: var(--red);
+    font-weight: 600;
+  }
+  .lbl-drop-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    fill: var(--red);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .lbl-terminus {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    fill: #fff;
+    letter-spacing: -0.018em;
+  }
+  .lbl-terminus-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    fill: rgba(255,255,255,0.9);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .lbl-side {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+  }
+  .lbl-path-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Station group hover */
+  .station {
+    cursor: pointer;
+    transition: transform .2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .station:hover {
+    transform: translateY(-2px);
+  }
+  .station:hover .station-card {
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+  }
+
+  /* Drop hover hi */
+  .drop-group { transition: opacity .25s ease; }
+  .drop-group.dim { opacity: 0.25; }
+  .drop-group.hi  { transform: scale(1.05); transform-origin: center; }
+
+  /* Filter modes: dim non-matching tracks */
+  .flowchart-svg[data-filter="gold"] .blue-only,
+  .flowchart-svg[data-filter="blue"] .gold-only {
+    opacity: 0.18;
+    transition: opacity .35s ease;
+  }
+  .flowchart-svg[data-filter="both"] .blue-only,
+  .flowchart-svg[data-filter="both"] .gold-only {
+    opacity: 1;
+    transition: opacity .35s ease;
+  }
+  .gold-only, .blue-only { transition: opacity .35s ease; }
+
+  /* Big decision banner */
+  .crux {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold-tint));
+    border: 1px solid var(--gold-line);
+    border-radius: 14px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .crux::before {
+    content: "★";
+    position: absolute;
+    font-size: 200px;
+    color: rgba(245,158,11,0.06);
+    top: -50px; right: -20px;
+    line-height: 1;
+  }
+  .crux-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    background: rgba(255,255,255,0.7);
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--gold-line);
+  }
+  .crux-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .crux-text strong { color: var(--ink); font-weight: 600; }
+
+  /* ====== Section header ====== */
   .section-head {
     display: flex; justify-content: space-between; align-items: flex-end;
     gap: 18px;
-    margin: 36px 0 22px;
+    margin: 44px 0 22px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
   }
@@ -283,16 +718,17 @@
     font-size: 11px;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     margin-bottom: 8px;
+    font-weight: 600;
   }
   .section-head h2 {
     margin: 0;
     font-family: 'Fraunces', serif;
-    font-size: 30px;
+    font-size: clamp(28px, 4vw, 36px);
     font-weight: 500;
-    letter-spacing: -0.025em;
-    line-height: 1.12;
+    letter-spacing: -0.027em;
+    line-height: 1.1;
     color: var(--ink);
   }
   .section-head h2 em { font-style: italic; color: var(--red); font-weight: 500; }
@@ -301,8 +737,9 @@
     font-size: 14px;
     color: var(--text-2);
     line-height: 1.6;
-    max-width: 640px;
+    max-width: 660px;
   }
+  .section-head p strong { color: var(--ink); font-weight: 600; }
   .section-head .right {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -311,36 +748,50 @@
     line-height: 1.5;
   }
 
-  /* Drop-off detail grid */
+  /* ====== Drop-off cards ====== */
   .drops {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
   .drop {
-    background: var(--panel);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--red-line);
-    border-radius: 12px;
-    padding: 16px 18px;
+    border-radius: 14px;
+    padding: 18px 20px 20px;
     position: relative;
     box-shadow: var(--shadow-sm);
-    background: linear-gradient(180deg, var(--red-soft) 0%, var(--panel) 60px);
+    background-image: linear-gradient(180deg, var(--red-soft) 0%, rgba(255,255,255,0.92) 80px);
+    cursor: pointer;
+    transition: transform .25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .25s ease, border-color .2s ease;
+    overflow: hidden;
+  }
+  .drop::after {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red-line) 100%);
+  }
+  .drop:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--red);
   }
   .drop-head {
     display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     gap: 12px;
   }
   .drop-id {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--red);
-    background: #fff;
-    border: 1px solid var(--red-line);
-    padding: 3px 8px;
-    border-radius: 5px;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--red);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.1em;
   }
   .drop-stage {
     font-family: 'JetBrains Mono', monospace;
@@ -348,14 +799,16 @@
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--muted);
+    font-weight: 600;
   }
   .drop h4 {
-    margin: 0 0 6px;
-    font-size: 15px;
+    margin: 0 0 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
     font-weight: 600;
     color: var(--ink);
-    letter-spacing: -0.015em;
-    line-height: 1.3;
+    letter-spacing: -0.018em;
+    line-height: 1.25;
   }
   .drop p {
     margin: 0;
@@ -365,30 +818,32 @@
   }
   .drop p strong { color: var(--ink); font-weight: 600; }
   .drop .mit {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed var(--red-line);
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--green-soft);
+    border-radius: 8px;
+    border-left: 3px solid var(--green);
     font-size: 12px;
     color: var(--text);
     line-height: 1.55;
   }
   .drop .mit::before {
-    content: "Mitigation · ";
+    content: "→ Mitigation";
+    display: block;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--green);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    margin-bottom: 4px;
   }
-  @media (max-width: 720px) {
-    .drops { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 720px) { .drops { grid-template-columns: 1fr; } }
 
   /* Footer */
   .footer {
-    margin-top: 28px;
-    padding-top: 18px;
+    margin-top: 36px;
+    padding-top: 20px;
     border-top: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 10px;
@@ -399,472 +854,424 @@
   .footer .attr { color: var(--text-2); }
   .footer a { color: var(--text-2); text-decoration: none; border-bottom: 1px dashed var(--border-2); }
 
-  /* ====== SVG styling ====== */
-  .flowchart-svg .track-shared { stroke: var(--ink);  stroke-width: 2.5; fill: none; }
-  .flowchart-svg .track-gold   { stroke: var(--gold-line);  stroke-width: 3;   fill: none; }
-  .flowchart-svg .track-blue   { stroke: var(--blue);  stroke-width: 3;   fill: none; }
-  .flowchart-svg .track-drop   { stroke: var(--red);   stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .blob { animation: none; }
+  }
 
-  .flowchart-svg .station-card { fill: #fff; stroke: var(--border-2); stroke-width: 1; }
-  .flowchart-svg .station-card.decision { fill: var(--gold-soft); stroke: var(--gold-line); stroke-width: 1.5; }
-  .flowchart-svg .station-card.decision-big { fill: var(--gold-tint); stroke: var(--gold-line); stroke-width: 2; }
-  .flowchart-svg .station-card.gold-path  { fill: var(--gold-soft); stroke: var(--gold-line); }
-  .flowchart-svg .station-card.blue-path  { fill: var(--blue-soft); stroke: var(--blue-line); }
-  .flowchart-svg .station-card.terminus-gold { fill: var(--gold);  stroke: var(--gold); }
-  .flowchart-svg .station-card.terminus-blue { fill: var(--blue);  stroke: var(--blue); }
-  .flowchart-svg .station-card.drop-card { fill: var(--red-soft); stroke: var(--red-line); }
-
-  .flowchart-svg .dot-shared { fill: #fff; stroke: var(--ink); stroke-width: 2.5; }
-  .flowchart-svg .dot-gold   { fill: #fff; stroke: var(--gold-line); stroke-width: 3; }
-  .flowchart-svg .dot-blue   { fill: #fff; stroke: var(--blue); stroke-width: 3; }
-  .flowchart-svg .dot-decision { fill: var(--gold-line); stroke: var(--gold); stroke-width: 2.5; }
-  .flowchart-svg .dot-decision-big { fill: var(--gold); stroke: var(--gold); stroke-width: 3; }
-  .flowchart-svg .dot-drop   { fill: var(--red); stroke: var(--red); }
-  .flowchart-svg .dot-terminus-gold { fill: var(--gold); stroke: var(--gold); stroke-width: 4; }
-  .flowchart-svg .dot-terminus-blue { fill: var(--blue); stroke: var(--blue); stroke-width: 4; }
-
-  .flowchart-svg text { font-family: 'Inter', sans-serif; }
-  .flowchart-svg .lbl-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9.5px;
-    fill: var(--muted);
-    letter-spacing: 0.1em;
+  /* Mobile tweaks */
+  @media (max-width: 720px) {
+    .wrap { padding: 16px 14px 60px; }
+    .topbar { padding: 8px 10px; }
+    .flow-stage { padding: 16px; }
+    .flow-head { gap: 10px; }
+    .filter-pill { padding: 6px 10px; font-size: 10.5px; }
+    .twobtn { padding: 20px; }
+    .twobtn h3 { font-size: 20px; }
+    .crux { grid-template-columns: 1fr; }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .section-head .right { text-align: left; }
+    .kpi-n { font-size: 26px; }
   }
-  .flowchart-svg .lbl-name {
-    font-size: 13.5px;
-    font-weight: 600;
-    fill: var(--ink);
-    letter-spacing: -0.015em;
-  }
-  .flowchart-svg .lbl-sub {
-    font-size: 11px;
-    fill: var(--text-2);
-  }
-  .flowchart-svg .lbl-decision {
-    font-family: 'Fraunces', serif;
-    font-size: 16px;
-    font-weight: 500;
-    fill: var(--ink);
-    letter-spacing: -0.018em;
-  }
-  .flowchart-svg .lbl-decision-big {
-    font-family: 'Fraunces', serif;
-    font-size: 19px;
-    font-weight: 600;
-    fill: var(--ink);
-    letter-spacing: -0.02em;
-  }
-  .flowchart-svg .lbl-decision-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    fill: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-weight: 600;
-  }
-  .flowchart-svg .lbl-drop {
-    font-size: 11px;
-    fill: var(--red);
-    font-weight: 600;
-    letter-spacing: -0.005em;
-  }
-  .flowchart-svg .lbl-drop-id {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    fill: var(--red);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
-  .flowchart-svg .lbl-terminus {
-    font-family: 'Fraunces', serif;
-    font-size: 17px;
-    font-weight: 600;
-    fill: #fff;
-    letter-spacing: -0.018em;
-  }
-  .flowchart-svg .lbl-terminus-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    fill: rgba(255,255,255,0.85);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-  .flowchart-svg .lbl-side {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10.5px;
-    fill: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-weight: 600;
-  }
-  .flowchart-svg .lbl-path-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-  .flowchart-svg .lbl-path-tag.gold { fill: var(--gold); }
-  .flowchart-svg .lbl-path-tag.blue { fill: var(--blue); }
 </style>
 </head>
 <body>
+
+<!-- Mesh gradient blobs (decorative) -->
+<div class="meshbg" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
 <div class="wrap">
 
-  <!-- Topbar -->
+  <!-- ====== TOPBAR ====== -->
   <div class="topbar">
-    <div class="brand">
-      <a href="kite-direction.html" style="text-decoration:none; display:flex; align-items:center; gap:14px; color:inherit;">
-        <div class="mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 L19 9 L12 22 L5 9 Z"/>
-            <line x1="12" y1="2" x2="12" y2="22"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <div class="t">Kite AI CMO</div>
-          <div class="s">flow / v0.2</div>
-        </div>
-      </a>
-    </div>
+    <a class="brand" href="kite-direction.html">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 L19 9 L12 22 L5 9 Z"/>
+          <line x1="12" y1="2" x2="12" y2="22"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="t">Kite AI CMO</div>
+        <div class="s">flow / v0.3 · animated</div>
+      </div>
+    </a>
     <a class="chip" href="kite-direction.html"><span class="live"></span> ← strategy + product</a>
   </div>
 
-  <!-- Hero -->
+  <!-- ====== HERO ====== -->
   <div class="hero">
-    <div class="eyebrow">The flow · two paths · one decision that splits them</div>
-    <h1>One entry. <em>Two paths.</em><br>Eight stations. Six exits.</h1>
-    <p class="dek">A customer opens Kite and asks for a change. Everything that follows runs on one of <strong>two lines</strong>: the <strong>Gold line</strong> (move to Kite, full takeover) or the <strong>Blue line</strong> (PR-only, stay on your own infra). The two share the first five stations, then split at <strong>the big decision</strong>, then diverge to two different terminal stops. Every red exit marks a place where customers leave.</p>
+    <div class="eyebrow reveal">The flow · two paths · one decision that splits them</div>
+    <h1 class="reveal">One entry. <span class="gold">Gold</span> or&nbsp;<span class="blue">Blue.</span><br><span class="light">Six exits along the way.</span></h1>
+    <p class="dek reveal">A customer opens Kite and asks for a change. What happens next runs on one of two lines: the <span class="pill-gold">Gold line</span> (move to Kite, full takeover) or the <span class="pill-blue">Blue line</span> (PR-only, stay on your own infra). They share the first five stations, split at the <strong>Big Decision</strong>, and run to two different terminal stops. Every red exit is a place where customers leave.</p>
 
-    <!-- Top two buttons -->
-    <div class="twobtns">
-      <div class="twobtn gold">
-        <div class="twobtn-k">Gold line · full takeover</div>
-        <h3>"I need it snappy. Move my site to Kite."</h3>
-        <p>Kite replicates the codebase, owns build / preview / deploy on a separate URL per environment. GitHub stays the source of truth. <strong>Best when speed matters more than reversibility.</strong></p>
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi k-ink reveal">
+        <div class="kpi-n"><span class="num" data-target="1000">0</span></div>
+        <div class="kpi-l">Entries · monthly target</div>
+        <div class="kpi-d">Visitors who paste a URL</div>
       </div>
-      <div class="twobtn blue">
-        <div class="twobtn-k">Blue line · PR-only</div>
-        <h3>"I just need a single page. Raise the PR."</h3>
-        <p>Kite generates the change, opens a PR against the customer's repo, and their existing CI/CD ships it. <strong>Best when the change is small or the customer doesn't want anything moving infra-side.</strong></p>
+      <div class="kpi k-red reveal">
+        <div class="kpi-n"><span class="num" data-target="58">0</span><span class="suffix">%</span></div>
+        <div class="kpi-l">Hit the Big Decision</div>
+        <div class="kpi-d">Survives stations 01–05</div>
+      </div>
+      <div class="kpi k-gold reveal">
+        <div class="kpi-n"><span class="num" data-target="9">0</span><span class="suffix">%</span></div>
+        <div class="kpi-l">Reach Paid · Gold</div>
+        <div class="kpi-d">Full takeover · Kite-owned runtime</div>
+      </div>
+      <div class="kpi k-blue reveal">
+        <div class="kpi-n"><span class="num" data-target="14">0</span><span class="suffix">%</span></div>
+        <div class="kpi-l">Reach Free · Blue</div>
+        <div class="kpi-d">PR-only · their infra</div>
+      </div>
+    </div>
+
+    <!-- Top two buttons (3D tilt) -->
+    <div class="twobtns" id="twobtns">
+      <div class="twobtn gold reveal" data-tilt>
+        <div class="twobtn-glare"></div>
+        <div class="twobtn-content">
+          <div class="twobtn-k"><span class="sw"></span>Gold line · full takeover</div>
+          <h3>"I need it snappy. Move my site to Kite."</h3>
+          <p>Kite replicates the codebase, owns build / preview / deploy on a separate URL per environment. GitHub stays the source of truth. <strong>Best when speed matters more than reversibility.</strong></p>
+        </div>
+      </div>
+      <div class="twobtn blue reveal" data-tilt>
+        <div class="twobtn-glare"></div>
+        <div class="twobtn-content">
+          <div class="twobtn-k"><span class="sw"></span>Blue line · PR-only</div>
+          <h3>"I just need a single page. Raise the PR."</h3>
+          <p>Kite generates the change, opens a PR against the customer's repo, and their existing CI/CD ships it. <strong>Best when the change is small or the customer doesn't want anything moving infra-side.</strong></p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ====== THE FLOWCHART ====== -->
-  <div class="flow-stage">
+  <!-- ====== FLOWCHART STAGE ====== -->
+  <div class="flow-stage reveal">
     <div class="flow-head">
       <div class="flow-title">The flow · transit map</div>
+
+      <div class="filter-pills" role="group" aria-label="Path filter">
+        <button class="filter-pill active" data-filter="both">Both lines</button>
+        <button class="filter-pill" data-filter="gold"><span class="sw"></span>Gold only</button>
+        <button class="filter-pill" data-filter="blue"><span class="sw"></span>Blue only</button>
+      </div>
+
       <div class="flow-legend">
         <span class="leg"><span class="leg-swatch shared"></span>Shared</span>
-        <span class="leg"><span class="leg-swatch gold"></span>Gold · full takeover</span>
-        <span class="leg"><span class="leg-swatch blue"></span>Blue · PR-only</span>
+        <span class="leg"><span class="leg-swatch gold"></span>Gold</span>
+        <span class="leg"><span class="leg-swatch blue"></span>Blue</span>
         <span class="leg"><span class="leg-swatch drop"></span>Drop-off</span>
       </div>
     </div>
 
-    <svg class="flowchart-svg" viewBox="0 0 1100 1820" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arrowhead-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink)"/>
-        </marker>
-        <marker id="arrowhead-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
-        </marker>
-        <marker id="arrowhead-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1d4ed8"/>
-        </marker>
-        <marker id="arrowhead-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
-        </marker>
-      </defs>
+    <div class="svg-frame">
+      <svg class="flowchart-svg" id="flow" data-filter="both" viewBox="0 0 1100 1820" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowhead-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#0a0a0a"/>
+          </marker>
+          <marker id="arrowhead-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+          </marker>
+          <linearGradient id="grad-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f59e0b"/>
+            <stop offset="100%" stop-color="#d97706"/>
+          </linearGradient>
+          <linearGradient id="grad-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
 
-      <!-- ===== SHARED TRACK (top, center) ===== -->
-      <!-- Vertical line, center column at x=550, from y=60 to y=830 -->
-      <path class="track-shared" d="M 550,75 L 550,810" marker-end="url(#arrowhead-ink)"/>
+        <!-- ============ SHARED TRACK ============ -->
+        <path id="path-shared" class="track-shared draw-on-load" d="M 550,75 L 550,810" marker-end="url(#arrowhead-ink)"/>
+        <!-- Pulse overlays -->
+        <path class="pulse-shared"        d="M 550,75 L 550,810"/>
+        <path class="pulse-shared delay-1" d="M 550,75 L 550,810"/>
+        <path class="pulse-shared delay-2" d="M 550,75 L 550,810"/>
 
-      <!-- Station 01: Entry -->
-      <g transform="translate(550, 75)">
-        <rect class="station-card" x="-180" y="-30" width="360" height="60" rx="14"/>
-        <circle class="dot-shared" cx="0" cy="-30" r="6" transform="translate(0, 30)"/>
-        <text class="lbl-num" x="-160" y="-8">01 · ENTRY</text>
-        <text class="lbl-name" x="-160" y="12">"Hey Kite — I want to modify my marketing pages"</text>
-      </g>
-      <!-- visible station dot on line -->
-      <circle class="dot-shared" cx="550" cy="75" r="7"/>
+        <!-- Station 01 -->
+        <g class="station">
+          <rect class="station-card" x="370" y="45" width="360" height="60" rx="14"/>
+          <text class="lbl-num" x="390" y="67">01 · ENTRY</text>
+          <text class="lbl-name" x="390" y="87">"Hey Kite — I want to modify my marketing pages"</text>
+          <circle class="dot-shared" cx="550" cy="75" r="7"/>
+        </g>
 
-      <!-- Station 02: Sync via Slack -->
-      <g transform="translate(550, 175)">
-        <rect class="station-card" x="-180" y="-30" width="360" height="60" rx="14"/>
-        <text class="lbl-num" x="-160" y="-8">02 · SYNC</text>
-        <text class="lbl-name" x="-160" y="12">Slack sync · pull recent context</text>
-      </g>
-      <circle class="dot-shared" cx="550" cy="175" r="7"/>
+        <!-- Station 02 -->
+        <g class="station">
+          <rect class="station-card" x="370" y="145" width="360" height="60" rx="14"/>
+          <text class="lbl-num" x="390" y="167">02 · SYNC</text>
+          <text class="lbl-name" x="390" y="187">Slack sync · pull recent context</text>
+          <circle class="dot-shared" cx="550" cy="175" r="7"/>
+        </g>
 
-      <!-- Decision 1: Has repo? -->
-      <g transform="translate(550, 285)">
-        <rect class="station-card decision" x="-200" y="-38" width="400" height="76" rx="14"/>
-        <text class="lbl-decision-sub" x="-180" y="-15">◇  DECISION 01</text>
-        <text class="lbl-decision" x="-180" y="6">Do you have a repository?</text>
-        <text class="lbl-sub" x="-180" y="24">YES · skip ahead · NO · Kite creates one for you</text>
-      </g>
-      <circle class="dot-decision" cx="550" cy="285" r="9"/>
+        <!-- Decision 01 -->
+        <g class="station">
+          <rect class="station-card decision" x="350" y="247" width="400" height="76" rx="14"/>
+          <text class="lbl-decision-sub" x="370" y="270">◇  DECISION 01</text>
+          <text class="lbl-decision" x="370" y="291">Do you have a repository?</text>
+          <text class="lbl-sub" x="370" y="309">YES · skip ahead · NO · Kite creates one for you</text>
+          <circle class="dot-decision" cx="550" cy="285" r="9"/>
+        </g>
 
-      <!-- Side branch: "Create new repo" -->
-      <path class="track-shared" d="M 550,323 Q 800,340 870,395" stroke-dasharray="0"/>
-      <g transform="translate(870, 395)">
-        <rect class="station-card" x="-90" y="-28" width="180" height="56" rx="12"/>
-        <text class="lbl-num" x="-72" y="-7">02a · NEW</text>
-        <text class="lbl-sub" x="-72" y="10">Repo creation flow</text>
-      </g>
-      <!-- arrow back from new-repo to main -->
-      <path class="track-shared" d="M 780,420 Q 700,430 555,470" stroke-dasharray="3 3" stroke-width="2"/>
+        <!-- Side branch: Create new repo -->
+        <path class="track-shared" d="M 550,323 Q 800,340 870,395"/>
+        <g class="station">
+          <rect class="station-card" x="780" y="367" width="180" height="56" rx="12"/>
+          <text class="lbl-num" x="798" y="388">02a · NEW</text>
+          <text class="lbl-sub" x="798" y="406">Repo creation flow</text>
+        </g>
+        <path class="track-shared" d="M 780,420 Q 700,430 555,470" stroke-dasharray="3 3" stroke-width="2"/>
 
-      <!-- Station 03: GitHub login -->
-      <g transform="translate(550, 460)">
-        <rect class="station-card" x="-180" y="-30" width="360" height="60" rx="14"/>
-        <text class="lbl-num" x="-160" y="-8">03 · AUTH</text>
-        <text class="lbl-name" x="-160" y="12">Login with GitHub · grant Kite App access</text>
-      </g>
-      <circle class="dot-shared" cx="550" cy="460" r="7"/>
+        <!-- Station 03 -->
+        <g class="station">
+          <rect class="station-card" x="370" y="430" width="360" height="60" rx="14"/>
+          <text class="lbl-num" x="390" y="452">03 · AUTH</text>
+          <text class="lbl-name" x="390" y="472">Login with GitHub · grant Kite App access</text>
+          <circle class="dot-shared" cx="550" cy="460" r="7"/>
+        </g>
 
-      <!-- DROP 1 (off station 03, going right): install authority denied -->
-      <path class="track-drop" d="M 730,460 L 880,460" marker-end="url(#arrowhead-red)"/>
-      <g transform="translate(965, 460)">
-        <rect class="station-card drop-card" x="-85" y="-26" width="170" height="52" rx="10"/>
-        <text class="lbl-drop-id" x="-68" y="-5">D1 · 20%</text>
-        <text class="lbl-drop" x="-68" y="14">Platform lead denies install</text>
-      </g>
+        <!-- DROP D1 -->
+        <g class="drop-group" data-drop="D1">
+          <path class="track-drop" d="M 730,460 L 880,460" marker-end="url(#arrowhead-red)"/>
+          <rect class="station-card drop-card" x="880" y="434" width="170" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="897" y="455">D1 · 20%</text>
+          <text class="lbl-drop" x="897" y="474">Platform lead denies install</text>
+        </g>
 
-      <!-- Station 04: Scan repository -->
-      <g transform="translate(550, 580)">
-        <rect class="station-card" x="-180" y="-30" width="360" height="60" rx="14"/>
-        <text class="lbl-num" x="-160" y="-8">04 · SCAN</text>
-        <text class="lbl-name" x="-160" y="12">Read repo · detect stack · map components</text>
-      </g>
-      <circle class="dot-shared" cx="550" cy="580" r="7"/>
+        <!-- Station 04 -->
+        <g class="station">
+          <rect class="station-card" x="370" y="550" width="360" height="60" rx="14"/>
+          <text class="lbl-num" x="390" y="572">04 · SCAN</text>
+          <text class="lbl-name" x="390" y="592">Read repo · detect stack · map components</text>
+          <circle class="dot-shared" cx="550" cy="580" r="7"/>
+        </g>
 
-      <!-- DROP 2 (off station 04): unsupported stack -->
-      <path class="track-drop" d="M 730,580 L 880,580" marker-end="url(#arrowhead-red)"/>
-      <g transform="translate(965, 580)">
-        <rect class="station-card drop-card" x="-85" y="-26" width="170" height="52" rx="10"/>
-        <text class="lbl-drop-id" x="-68" y="-5">D2 · 12%</text>
-        <text class="lbl-drop" x="-68" y="14">Stack we can't manage yet</text>
-      </g>
+        <!-- DROP D2 -->
+        <g class="drop-group" data-drop="D2">
+          <path class="track-drop" d="M 730,580 L 880,580" marker-end="url(#arrowhead-red)"/>
+          <rect class="station-card drop-card" x="880" y="554" width="170" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="897" y="575">D2 · 12%</text>
+          <text class="lbl-drop" x="897" y="594">Stack we can't manage</text>
+        </g>
 
-      <!-- Station 05: Verify access (Appsmith v1 style) -->
-      <g transform="translate(550, 690)">
-        <rect class="station-card" x="-180" y="-30" width="360" height="60" rx="14"/>
-        <text class="lbl-num" x="-160" y="-8">05 · VERIFY</text>
-        <text class="lbl-name" x="-160" y="12">Confirm we can manage it · Appsmith v1 pattern</text>
-      </g>
-      <circle class="dot-shared" cx="550" cy="690" r="7"/>
+        <!-- Station 05 -->
+        <g class="station">
+          <rect class="station-card" x="370" y="660" width="360" height="60" rx="14"/>
+          <text class="lbl-num" x="390" y="682">05 · VERIFY</text>
+          <text class="lbl-name" x="390" y="702">Confirm we can manage it · Appsmith v1 pattern</text>
+          <circle class="dot-shared" cx="550" cy="690" r="7"/>
+        </g>
 
-      <!-- ===== THE BIG DECISION (the centerpiece) ===== -->
-      <g transform="translate(550, 810)">
-        <!-- soft glow rect -->
-        <rect class="station-card decision-big" x="-260" y="-58" width="520" height="116" rx="20"/>
-        <text class="lbl-decision-sub" x="0" y="-30" text-anchor="middle">★  THE BIG DECISION</text>
-        <text class="lbl-decision-big" x="0" y="0" text-anchor="middle">Move to Kite, or just raise PRs?</text>
-        <text class="lbl-sub" x="0" y="22" text-anchor="middle" style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em;">
-          ←  GOLD · snappy &amp; full ownership  ·  BLUE · control &amp; reversibility  →
-        </text>
-        <text class="lbl-sub" x="0" y="40" text-anchor="middle" style="font-style:italic;">"Just a single page → PR. Whole site needs to feel instant → move."</text>
-      </g>
-      <circle class="dot-decision-big" cx="550" cy="810" r="11"/>
+        <!-- ============ THE BIG DECISION ============ -->
+        <g class="station">
+          <rect class="station-card decision-big" x="290" y="752" width="520" height="116" rx="20"/>
+          <text class="lbl-decision-sub" x="550" y="780" text-anchor="middle">★  THE BIG DECISION</text>
+          <text class="lbl-decision-big" x="550" y="810" text-anchor="middle">Move to Kite, or just raise PRs?</text>
+          <text class="lbl-sub" x="550" y="832" text-anchor="middle" style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; font-weight: 600;">
+            ←  GOLD · snappy &amp; full ownership  ·  BLUE · control &amp; reversibility  →
+          </text>
+          <text class="lbl-sub" x="550" y="852" text-anchor="middle" style="font-style:italic;">"Single page → PR. Whole site needs to feel instant → move."</text>
+          <circle class="dot-decision-big" cx="550" cy="810" r="11"/>
+        </g>
 
-      <!-- ===== DIVERGE: Gold goes LEFT, Blue goes RIGHT ===== -->
-      <!-- Gold line down to x=260 -->
-      <path class="track-gold" d="M 550,868 Q 400,920 260,950 L 260,1010"/>
-      <!-- Blue line down to x=840 -->
-      <path class="track-blue" d="M 550,868 Q 700,920 840,950 L 840,1010"/>
+        <!-- ============ DIVERGE: Gold goes LEFT, Blue goes RIGHT ============ -->
+        <g class="gold-only">
+          <path id="path-gold" class="track-gold draw-on-load" d="M 550,868 Q 400,920 260,950 L 260,1690" marker-end="url(#arrowhead-ink)"/>
+          <path class="pulse-gold"        d="M 550,868 Q 400,920 260,950 L 260,1690"/>
+          <path class="pulse-gold delay-1" d="M 550,868 Q 400,920 260,950 L 260,1690"/>
+        </g>
+        <g class="blue-only">
+          <path id="path-blue" class="track-blue draw-on-load" d="M 550,868 Q 700,920 840,950 L 840,1480" marker-end="url(#arrowhead-ink)"/>
+          <path class="pulse-blue"        d="M 550,868 Q 700,920 840,950 L 840,1480"/>
+          <path class="pulse-blue delay-1" d="M 550,868 Q 700,920 840,950 L 840,1480"/>
+        </g>
 
-      <!-- Path labels (above first station of each) -->
-      <g transform="translate(260, 935)">
-        <rect class="station-card gold-path" x="-72" y="-15" width="144" height="30" rx="15"/>
-        <text class="lbl-path-tag gold" x="0" y="5" text-anchor="middle">GOLD LINE  →</text>
-      </g>
-      <g transform="translate(840, 935)">
-        <rect class="station-card blue-path" x="-72" y="-15" width="144" height="30" rx="15"/>
-        <text class="lbl-path-tag blue" x="0" y="5" text-anchor="middle">BLUE LINE  →</text>
-      </g>
+        <!-- Path tags -->
+        <g class="gold-only">
+          <rect class="station-card gold-path" x="188" y="920" width="144" height="32" rx="16"/>
+          <text class="lbl-path-tag" x="260" y="941" text-anchor="middle" style="fill: var(--gold);">GOLD LINE  →</text>
+        </g>
+        <g class="blue-only">
+          <rect class="station-card blue-path" x="768" y="920" width="144" height="32" rx="16"/>
+          <text class="lbl-path-tag" x="840" y="941" text-anchor="middle" style="fill: var(--blue);">BLUE LINE  →</text>
+        </g>
 
-      <!-- ===== GOLD LINE STATIONS (left, x=260) ===== -->
-      <path class="track-gold" d="M 260,1010 L 260,1700"/>
+        <!-- ============ GOLD STATIONS ============ -->
+        <g class="gold-only">
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1022" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1043" style="fill: var(--gold);">G1 · BRANCH</text>
+            <text class="lbl-name" x="148" y="1061" style="font-size: 12.5px;">Create Kite branch inside the codebase</text>
+            <circle class="dot-gold" cx="260" cy="1050" r="7"/>
+          </g>
 
-      <!-- G1: Create Kite branch -->
-      <g transform="translate(260, 1050)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G1 · BRANCH</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Create Kite branch inside the codebase</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1050" r="7"/>
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1132" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1153" style="fill: var(--gold);">G2 · CREDS</text>
+            <text class="lbl-name" x="148" y="1171" style="font-size: 12.5px;">Collect every credential we need to replicate</text>
+            <circle class="dot-gold" cx="260" cy="1160" r="7"/>
+          </g>
 
-      <!-- G2: Credentials -->
-      <g transform="translate(260, 1160)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G2 · CREDS</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Collect every credential we need to replicate</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1160" r="7"/>
+          <!-- DROP D3 -->
+          <g class="drop-group" data-drop="D3">
+            <path class="track-drop" d="M 130,1160 L 30,1160" marker-end="url(#arrowhead-red)"/>
+            <rect class="station-card drop-card" x="-150" y="1134" width="150" height="52" rx="10" transform="translate(170, 0)"/>
+            <text class="lbl-drop-id" x="35" y="1155">D3 · 8%</text>
+            <text class="lbl-drop" x="35" y="1174" style="font-size: 10.5px;">Creds withheld by sec</text>
+          </g>
 
-      <!-- DROP G2: credentials withheld -->
-      <path class="track-drop" d="M 130,1160 L 30,1160" marker-end="url(#arrowhead-red)"/>
-      <g transform="translate(20, 1160)" text-anchor="end">
-        <rect class="station-card drop-card" x="-150" y="-26" width="150" height="52" rx="10"/>
-        <text class="lbl-drop-id" x="-135" y="-5" text-anchor="start">D3 · 8%</text>
-        <text class="lbl-drop" x="-135" y="14" text-anchor="start" style="font-size: 10.5px;">Creds withheld by security</text>
-      </g>
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1242" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1263" style="fill: var(--gold);">G3 · REPLICATE</text>
+            <text class="lbl-name" x="148" y="1281" style="font-size: 12.5px;">Mirror codebase in Kite environment</text>
+            <circle class="dot-gold" cx="260" cy="1270" r="7"/>
+          </g>
 
-      <!-- G3: Replicate codebase -->
-      <g transform="translate(260, 1270)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G3 · REPLICATE</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Mirror codebase in Kite environment</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1270" r="7"/>
+          <!-- DROP D4 -->
+          <g class="drop-group" data-drop="D4">
+            <path class="track-drop" d="M 130,1270 L 30,1270" marker-end="url(#arrowhead-red)"/>
+            <rect class="station-card drop-card" x="20" y="1244" width="150" height="52" rx="10"/>
+            <text class="lbl-drop-id" x="35" y="1265">D4 · 7%</text>
+            <text class="lbl-drop" x="35" y="1284" style="font-size: 10.5px;">"Extras" can't replicate</text>
+          </g>
 
-      <!-- DROP G3: extras can't be replicated -->
-      <path class="track-drop" d="M 130,1270 L 30,1270" marker-end="url(#arrowhead-red)"/>
-      <g transform="translate(20, 1270)">
-        <rect class="station-card drop-card" x="-150" y="-26" width="150" height="52" rx="10"/>
-        <text class="lbl-drop-id" x="-135" y="-5" text-anchor="start">D4 · 7%</text>
-        <text class="lbl-drop" x="-135" y="14" text-anchor="start" style="font-size: 10.5px;">"Extras" can't be replicated</text>
-      </g>
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1352" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1373" style="fill: var(--gold);">G4 · DEPLOY</text>
+            <text class="lbl-name" x="148" y="1391" style="font-size: 12.5px;">Separate URLs · all environments</text>
+            <circle class="dot-gold" cx="260" cy="1380" r="7"/>
+          </g>
 
-      <!-- G4: Deploy separate URLs -->
-      <g transform="translate(260, 1380)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G4 · DEPLOY</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Separate URLs · all environments</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1380" r="7"/>
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1462" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1483" style="fill: var(--gold);">G5 · LOOP</text>
+            <text class="lbl-name" x="148" y="1501" style="font-size: 12.5px;">Modify · preview · approve · deploy</text>
+            <circle class="dot-gold" cx="260" cy="1490" r="7"/>
+          </g>
 
-      <!-- G5: User makes changes & ships -->
-      <g transform="translate(260, 1490)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G5 · LOOP</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Modify · preview · approve · deploy</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1490" r="7"/>
+          <g class="station">
+            <rect class="station-card gold-path" x="130" y="1572" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="148" y="1593" style="fill: var(--gold);">G6 · SYNC</text>
+            <text class="lbl-name" x="148" y="1611" style="font-size: 12.5px;">Sync the commit back to GitHub main</text>
+            <circle class="dot-gold" cx="260" cy="1600" r="7"/>
+          </g>
 
-      <!-- G6: Sync back to GitHub main -->
-      <g transform="translate(260, 1600)">
-        <rect class="station-card gold-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--gold);">G6 · SYNC</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Sync the merged commit back to GitHub main</text>
-      </g>
-      <circle class="dot-gold" cx="260" cy="1600" r="7"/>
+          <!-- TERMINUS GOLD -->
+          <g class="station">
+            <rect class="station-card terminus-gold" x="130" y="1703" width="260" height="64" rx="14"/>
+            <text class="lbl-terminus-sub" x="260" y="1726" text-anchor="middle">●  TERMINUS · GOLD</text>
+            <text class="lbl-terminus" x="260" y="1750" text-anchor="middle">Paid · Kite-owned runtime</text>
+            <circle class="dot-terminus-gold" cx="260" cy="1735" r="10"/>
+          </g>
 
-      <!-- TERMINUS GOLD -->
-      <g transform="translate(260, 1735)">
-        <rect class="station-card terminus-gold" x="-130" y="-32" width="260" height="64" rx="14"/>
-        <text class="lbl-terminus-sub" x="0" y="-9" text-anchor="middle">●  TERMINUS · GOLD</text>
-        <text class="lbl-terminus" x="0" y="15" text-anchor="middle">Paid · Kite-owned runtime</text>
-      </g>
-      <circle class="dot-terminus-gold" cx="260" cy="1735" r="10"/>
+          <!-- Side label gold -->
+          <text class="lbl-side" x="60" y="1350" transform="rotate(-90, 60, 1350)" style="fill: var(--gold);">GOLD · G1 — G6</text>
+        </g>
 
-      <!-- ===== BLUE LINE STATIONS (right, x=840) ===== -->
-      <path class="track-blue" d="M 840,1010 L 840,1480"/>
+        <!-- ============ BLUE STATIONS ============ -->
+        <g class="blue-only">
+          <g class="station">
+            <rect class="station-card blue-path" x="710" y="1022" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="728" y="1043" style="fill: var(--blue);">B1 · GENERATE</text>
+            <text class="lbl-name" x="728" y="1061" style="font-size: 12.5px;">Kite drafts the code change</text>
+            <circle class="dot-blue" cx="840" cy="1050" r="7"/>
+          </g>
 
-      <!-- B1: Generate change -->
-      <g transform="translate(840, 1050)">
-        <rect class="station-card blue-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--blue);">B1 · GENERATE</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Kite drafts the code change</text>
-      </g>
-      <circle class="dot-blue" cx="840" cy="1050" r="7"/>
+          <g class="station">
+            <rect class="station-card blue-path" x="710" y="1132" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="728" y="1153" style="fill: var(--blue);">B2 · PR</text>
+            <text class="lbl-name" x="728" y="1171" style="font-size: 12.5px;">Open a pull request on their main repo</text>
+            <circle class="dot-blue" cx="840" cy="1160" r="7"/>
+          </g>
 
-      <!-- B2: Raise PR -->
-      <g transform="translate(840, 1160)">
-        <rect class="station-card blue-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--blue);">B2 · PR</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Open a pull request on their main repo</text>
-      </g>
-      <circle class="dot-blue" cx="840" cy="1160" r="7"/>
+          <!-- DROP D5 -->
+          <g class="drop-group" data-drop="D5">
+            <path class="track-drop" d="M 970,1160 L 1020,1160" marker-end="url(#arrowhead-red)"/>
+            <rect class="station-card drop-card" x="990" y="1115" width="100" height="42" rx="8"/>
+            <text class="lbl-drop-id" x="1004" y="1133">D5 · 5%</text>
+            <text class="lbl-drop" x="1004" y="1148" style="font-size: 9.5px;">Team rejects PR</text>
+          </g>
 
-      <!-- DROP B2: team rejects PR -->
-      <path class="track-drop" d="M 970,1160 L 1070,1160" marker-end="url(#arrowhead-red)"/>
-      <g transform="translate(1080, 1160)">
-        <rect class="station-card drop-card" x="0" y="-26" width="14" height="52" rx="3"/>
-      </g>
-      <!-- Better drop label inside the canvas -->
-      <g transform="translate(990, 1115)">
-        <rect class="station-card drop-card" x="0" y="0" width="80" height="36" rx="8"/>
-        <text class="lbl-drop-id" x="6" y="14">D5 · 5%</text>
-        <text class="lbl-drop" x="6" y="28" style="font-size: 9.5px;">Team rejects PR</text>
-      </g>
+          <g class="station">
+            <rect class="station-card blue-path" x="710" y="1242" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="728" y="1263" style="fill: var(--blue);">B3 · WAIT</text>
+            <text class="lbl-name" x="728" y="1281" style="font-size: 12.5px;">Customer's CI/CD builds &amp; deploys</text>
+            <circle class="dot-blue" cx="840" cy="1270" r="7"/>
+          </g>
 
-      <!-- B3: Wait on customer CI/CD -->
-      <g transform="translate(840, 1270)">
-        <rect class="station-card blue-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--blue);">B3 · WAIT</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Customer's CI/CD builds &amp; deploys</text>
-      </g>
-      <circle class="dot-blue" cx="840" cy="1270" r="7"/>
+          <!-- DROP D6 -->
+          <g class="drop-group" data-drop="D6">
+            <path class="track-drop" d="M 970,1270 L 1020,1270" marker-end="url(#arrowhead-red)"/>
+            <rect class="station-card drop-card" x="990" y="1225" width="100" height="42" rx="8"/>
+            <text class="lbl-drop-id" x="1004" y="1243">D6 · 6%</text>
+            <text class="lbl-drop" x="1004" y="1258" style="font-size: 9.5px;">CI/CD too slow</text>
+          </g>
 
-      <!-- DROP B3: time delay too long -->
-      <g transform="translate(990, 1225)">
-        <rect class="station-card drop-card" x="0" y="0" width="80" height="36" rx="8"/>
-        <text class="lbl-drop-id" x="6" y="14">D6 · 6%</text>
-        <text class="lbl-drop" x="6" y="28" style="font-size: 9.5px;">CI/CD too slow</text>
-      </g>
+          <g class="station">
+            <rect class="station-card blue-path" x="710" y="1352" width="260" height="56" rx="12"/>
+            <text class="lbl-num" x="728" y="1373" style="fill: var(--blue);">B4 · SHIP</text>
+            <text class="lbl-name" x="728" y="1391" style="font-size: 12.5px;">Their pipeline ships the change to prod</text>
+            <circle class="dot-blue" cx="840" cy="1380" r="7"/>
+          </g>
 
-      <!-- B4: Customer ships to prod -->
-      <g transform="translate(840, 1380)">
-        <rect class="station-card blue-path" x="-130" y="-28" width="260" height="56" rx="12"/>
-        <text class="lbl-num" x="-112" y="-7" style="fill: var(--blue);">B4 · SHIP</text>
-        <text class="lbl-name" x="-112" y="11" style="font-size: 12.5px;">Their pipeline ships the change to prod</text>
-      </g>
-      <circle class="dot-blue" cx="840" cy="1380" r="7"/>
+          <!-- TERMINUS BLUE -->
+          <g class="station">
+            <rect class="station-card terminus-blue" x="710" y="1493" width="260" height="64" rx="14"/>
+            <text class="lbl-terminus-sub" x="840" y="1516" text-anchor="middle">●  TERMINUS · BLUE</text>
+            <text class="lbl-terminus" x="840" y="1540" text-anchor="middle">Free · PR-only mode</text>
+            <circle class="dot-terminus-blue" cx="840" cy="1525" r="10"/>
+          </g>
 
-      <!-- TERMINUS BLUE -->
-      <g transform="translate(840, 1500)">
-        <rect class="station-card terminus-blue" x="-130" y="-32" width="260" height="64" rx="14"/>
-        <text class="lbl-terminus-sub" x="0" y="-9" text-anchor="middle">●  TERMINUS · BLUE</text>
-        <text class="lbl-terminus" x="0" y="15" text-anchor="middle">Free · PR-only mode</text>
-      </g>
-      <circle class="dot-terminus-blue" cx="840" cy="1500" r="10"/>
+          <!-- Side label blue -->
+          <text class="lbl-side" x="1075" y="1280" transform="rotate(-90, 1075, 1280)" style="fill: var(--blue);">BLUE · B1 — B4</text>
+        </g>
 
-      <!-- Side annotations ===== -->
-      <!-- "Shared section" label (left of shared track) -->
-      <g transform="translate(50, 400)">
-        <text class="lbl-side" transform="rotate(-90, 0, 0)">SHARED · 01 — 05</text>
-      </g>
-      <!-- "Gold path" label (left of gold) -->
-      <g transform="translate(50, 1350)">
-        <text class="lbl-side" transform="rotate(-90, 0, 0)" style="fill: var(--gold);">GOLD · G1 — G6</text>
-      </g>
-      <!-- "Blue path" label (right of blue) — to avoid overlap, put it at the top-right -->
-      <g transform="translate(1075, 1280)">
-        <text class="lbl-side" transform="rotate(-90, 0, 0)" style="fill: var(--blue);">BLUE · B1 — B4</text>
-      </g>
+        <!-- Side label shared -->
+        <text class="lbl-side" x="60" y="400" transform="rotate(-90, 60, 400)">SHARED · 01 — 05</text>
+      </svg>
+    </div>
 
-    </svg>
-
-    <!-- Big-decision callout below the diagram -->
-    <div style="margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; background: var(--gold-soft); border: 1px solid var(--gold-line); border-radius: 12px; padding: 14px 18px;">
-      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700;">★ The crux</div>
-      <div style="font-size: 13.5px; line-height: 1.55; color: var(--text);">
-        Every customer hits <strong>"Decision 01"</strong> (have a repo) — easy. They all hit <strong>"The Big Decision"</strong> — hard. That's the moment most of the funnel's value, and most of its risk, is concentrated. Get this fork right, and the rest of the line is downstream.
+    <!-- Big-decision callout -->
+    <div class="crux">
+      <span class="crux-tag">★ The crux</span>
+      <div class="crux-text">
+        Every customer hits <strong>Decision 01</strong> — easy. They all hit <strong>The Big Decision</strong> — hard. <strong>That's where most of the funnel's value, and most of its risk, is concentrated.</strong> Get this fork right, and the rest of the line is downstream.
       </div>
     </div>
   </div>
 
-  <!-- ====== DETAIL CARDS for the drop-offs ====== -->
+  <!-- ====== DROP-OFF CARDS ====== -->
   <div class="section-head">
     <div>
       <div class="kicker">The exits</div>
       <h2>Six places where customers <em>leave</em>.</h2>
-      <p>Each exit on the map maps to a card below. Drop rates are <strong>pre-data estimates</strong> — replace with real values after the first 100 sign-ups. Mitigations are the cheapest move that doesn't break the rest of the line.</p>
+      <p>Each exit on the map maps to a card below. Drop rates are <strong>pre-data estimates</strong> — replace with real values after the first 100 sign-ups. Hover a card to highlight its exit on the chart above. Mitigations are the cheapest move that doesn't break the rest of the line.</p>
     </div>
     <div class="right">2 shared exits<br>2 gold exits<br>2 blue exits</div>
   </div>
 
   <div class="drops">
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D1">
       <div class="drop-head">
         <span class="drop-id">D1 · 20%</span>
         <span class="drop-stage">Station 03 · Auth</span>
@@ -874,7 +1281,7 @@
       <div class="mit">Show only the minimum scope at install time. Reserve deploy / write scopes for the gold-line graduation step. Add inline plain-English explanations next to every permission.</div>
     </article>
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D2">
       <div class="drop-head">
         <span class="drop-id">D2 · 12%</span>
         <span class="drop-stage">Station 04 · Scan</span>
@@ -884,7 +1291,7 @@
       <div class="mit">Catch this at <strong>Station 01</strong>, not at 04 — pre-flight the URL the moment it's pasted. For unsupported stacks, capture the framework as a waitlist signal instead of leaving the user with a dead end.</div>
     </article>
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D3">
       <div class="drop-head">
         <span class="drop-id">D3 · 8%</span>
         <span class="drop-stage">Gold · G2 · Credentials</span>
@@ -894,7 +1301,7 @@
       <div class="mit">Two paths: <strong>(a)</strong> Start with staging-only credentials and gate prod-creds behind explicit migration. <strong>(b)</strong> Offer a Vault-style integration so secrets stay in the customer's vault and Kite reads them at runtime, not at install.</div>
     </article>
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D4">
       <div class="drop-head">
         <span class="drop-id">D4 · 7%</span>
         <span class="drop-stage">Gold · G3 · Replicate</span>
@@ -904,7 +1311,7 @@
       <div class="mit">Run a <strong>pre-flight "extras inventory"</strong> at Station 04 (scan), not at G3. Tell the customer up-front what we can replicate, what stays connected via their accounts, and what we can't take. Set expectations before we charge.</div>
     </article>
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D5">
       <div class="drop-head">
         <span class="drop-id">D5 · 5%</span>
         <span class="drop-stage">Blue · B2 · PR</span>
@@ -914,7 +1321,7 @@
       <div class="mit">Run a <strong>"style match" pass</strong> against the repo's recent merged commits before opening any PR. Match conventions; don't impose them. Add an auto-message on the PR explaining what Kite did and what it deliberately didn't touch.</div>
     </article>
 
-    <article class="drop">
+    <article class="drop reveal" data-drop="D6">
       <div class="drop-head">
         <span class="drop-id">D6 · 6%</span>
         <span class="drop-stage">Blue · B3 · Wait</span>
@@ -929,9 +1336,132 @@
   <!-- Footer -->
   <div class="footer">
     <span class="attr">Kite AI CMO · flowchart &amp; drop-offs · 25 May 2026 · companion: <a href="kite-direction.html">kite-direction.html</a></span>
-    <span>v0.2 · transit-map redesign · drop rates pre-data</span>
+    <span>v0.3 · animated transit map · drop rates pre-data</span>
   </div>
 
 </div>
+
+<script>
+  // Register GSAP plugins
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  // ====== Reveal-on-scroll ======
+  document.addEventListener('DOMContentLoaded', () => {
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('in'), i * 60);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => io.observe(el));
+
+    // ====== Count-up KPIs ======
+    const nums = document.querySelectorAll('.num');
+    const ioNum = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target, 10);
+          const dur = 1400;
+          const start = performance.now();
+          function tick(now) {
+            const t = Math.min((now - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            el.textContent = Math.round(target * eased).toLocaleString();
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          ioNum.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    nums.forEach(el => ioNum.observe(el));
+
+    // ====== 3D tilt on top buttons ======
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      const maxTilt = 8; // degrees
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top)  / rect.height;
+        const rx = (py - 0.5) * -maxTilt;
+        const ry = (px - 0.5) *  maxTilt;
+        card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+        card.style.setProperty('--mx', (px * 100) + '%');
+        card.style.setProperty('--my', (py * 100) + '%');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // ====== Path filter toggle ======
+    const flow = document.getElementById('flow');
+    const pills = document.querySelectorAll('.filter-pill');
+    pills.forEach(p => {
+      p.addEventListener('click', () => {
+        pills.forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        flow.setAttribute('data-filter', p.dataset.filter);
+      });
+    });
+
+    // ====== Drop card <-> SVG exit linking ======
+    const dropCards = document.querySelectorAll('.drop[data-drop]');
+    dropCards.forEach(card => {
+      const id = card.dataset.drop;
+      const exit = document.querySelector(`.drop-group[data-drop="${id}"]`);
+      if (!exit) return;
+
+      card.addEventListener('mouseenter', () => {
+        // dim other exits
+        document.querySelectorAll('.drop-group').forEach(g => {
+          if (g !== exit) g.classList.add('dim');
+        });
+        exit.classList.add('hi');
+      });
+      card.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.drop-group').forEach(g => g.classList.remove('dim'));
+        exit.classList.remove('hi');
+      });
+      card.addEventListener('click', () => {
+        // scroll the chart into view and briefly highlight
+        const stage = document.querySelector('.flow-stage');
+        stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        exit.classList.add('hi');
+        setTimeout(() => exit.classList.remove('hi'), 1800);
+      });
+    });
+
+    // ====== Path-draw entrance with GSAP ScrollTrigger ======
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.utils.toArray('.draw-on-load').forEach(path => {
+        const len = path.getTotalLength ? path.getTotalLength() : 3000;
+        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          duration: 1.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: path,
+            start: 'top 85%',
+            once: true
+          },
+          onComplete: () => {
+            // clear so subsequent CSS animations work
+            path.style.strokeDasharray = '';
+            path.style.strokeDashoffset = '';
+          }
+        });
+      });
+    }
+  });
+</script>
+
 </body>
 </html>
