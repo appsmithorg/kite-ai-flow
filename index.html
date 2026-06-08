@@ -278,6 +278,63 @@
   .decision-card.swap .k { color: var(--amber); }
   @media (max-width: 720px) { .decisions { grid-template-columns: 1fr; } }
 
+  /* Four ways in — onboarding doors */
+  .doors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .door {
+    position: relative; overflow: hidden;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px 22px 18px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .25s ease, border-color .2s ease;
+  }
+  .door:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .door::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .door.create { border-color: var(--gold-line); background-image: linear-gradient(180deg, var(--gold-soft) 0%, rgba(255,255,255,0.92) 90px); }
+  .door.create::after { background: linear-gradient(90deg, var(--gold-bright), var(--gold-line)); }
+  .door.create:hover { border-color: var(--gold-bright); }
+  .door.import { border-color: var(--blue-line); background-image: linear-gradient(180deg, var(--blue-soft) 0%, rgba(255,255,255,0.92) 90px); }
+  .door.import::after { background: linear-gradient(90deg, var(--blue), var(--blue-bright)); }
+  .door.import:hover { border-color: var(--blue-bright); }
+
+  .door-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .door-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #fff; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.1em; }
+  .door.create .door-id { background: var(--gold-bright); }
+  .door.import .door-id { background: var(--blue); }
+  .door-kind { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 700; margin-left: auto; }
+  .door.create .door-kind { color: var(--gold); }
+  .door.import .door-kind { color: var(--blue); }
+  .door h4 { margin: 8px 0 4px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; color: var(--ink); letter-spacing: -0.018em; line-height: 1.22; }
+  .door .who { margin: 0 0 14px; font-size: 12.5px; color: var(--text-2); line-height: 1.55; }
+  .door .who strong { color: var(--ink); font-weight: 600; }
+
+  /* mini step-flow */
+  .steps { display: flex; align-items: stretch; flex-wrap: wrap; gap: 6px 0; }
+  .step { display: inline-flex; align-items: center; }
+  .step .chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+    color: var(--text); background: rgba(255,255,255,0.75);
+    border: 1px solid var(--border-2); border-radius: 7px; padding: 5px 9px;
+    line-height: 1.2; white-space: nowrap;
+  }
+  .step.gold .chip { color: var(--gold); border-color: var(--gold-line); background: var(--gold-soft); }
+  .step.blue .chip { color: var(--blue); border-color: var(--blue-line); background: var(--blue-soft); }
+  .step.hidden .chip { color: var(--muted); border-style: dashed; background: rgba(255,255,255,0.5); }
+  .step .arrow { color: var(--faint); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 0 5px; }
+
+  .door-merge {
+    margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-2);
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-2);
+  }
+  .door-merge .tag { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: var(--muted); }
+  .door-merge .at { color: var(--ink); font-weight: 700; }
+  .door .git-note { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 6px; letter-spacing: 0.04em; }
+  .door .git-note.invisible { color: var(--green); background: var(--green-soft); border: 1px solid var(--green-line); }
+  .door .git-note .sw { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  @media (max-width: 720px) { .doors { grid-template-columns: 1fr; } }
+
   /* Section header */
   .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; margin: 44px 0 22px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
   .section-head .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 8px; font-weight: 600; }
@@ -627,6 +684,101 @@
         The old "Big Decision" — <em>move to Kite or just raise PRs?</em> — has been retired. The new design says <strong>both, always</strong>: edit on Kite, ship via GitHub, sync both ways. <strong>The risk surface shifts to Station 11 (sync) and Station 10 (merge conflicts)</strong>. Get the webhook plumbing right and the LLM-merge right, and the rest is downstream.
       </div>
     </div>
+  </div>
+
+  <!-- Four ways in -->
+  <div class="section-head">
+    <div>
+      <div class="kicker">The entry · expanding Decision 01</div>
+      <h2>Four ways <em>in.</em></h2>
+      <p><code style="font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--bg-2);padding:1px 6px;border-radius:4px;border:1px solid var(--border);">Do you have a repository?</code> isn't a yes/no in practice — customers arrive through <strong>four different doors</strong>. Two <strong>create</strong> something new, two work with a repo that <strong>already exists</strong>. All four merge back into the single track above.</p>
+    </div>
+    <div class="right">2 create-new<br>2 existing-repo<br>1 Git-free path</div>
+  </div>
+
+  <div class="doors">
+
+    <article class="door create reveal">
+      <div class="door-head">
+        <span class="door-id">CASE A</span>
+        <span class="door-kind">Create · Git hidden</span>
+      </div>
+      <h4>"I just want a website"</h4>
+      <p class="who"><strong>No idea what Git or GitHub is</strong>, and doesn't want to learn. Describes the site in plain language and expects Kite to handle everything underneath.</p>
+      <div class="steps">
+        <span class="step"><span class="chip">Describe site</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Kite generates it</span><span class="arrow">→</span></span>
+        <span class="step hidden"><span class="chip">Repo created &amp; owned by Kite</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Edit + preview</span></span>
+      </div>
+      <span class="git-note invisible"><span class="sw"></span>GitHub never shown — Kite owns the repo on the user's behalf</span>
+      <div class="door-merge">
+        <span class="tag">Merges at</span>
+        <span class="at">06 · Branch</span>
+        <span>— nothing to scan or import</span>
+      </div>
+    </article>
+
+    <article class="door create reveal">
+      <div class="door-head">
+        <span class="door-id">CASE B</span>
+        <span class="door-kind">Create · new repo</span>
+      </div>
+      <h4>New site, on <em>my</em> GitHub</h4>
+      <p class="who">No repository yet, but <strong>wants the site to live in their own GitHub</strong> from day one. Knows GitHub; just hasn't created the repo.</p>
+      <div class="steps">
+        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
+        <span class="step blue"><span class="chip">Kite creates the repo</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Scaffold new site</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Edit + preview</span></span>
+      </div>
+      <div class="door-merge">
+        <span class="tag">Merges at</span>
+        <span class="at">03 · Auth</span>
+        <span>→ then 06 · Branch</span>
+      </div>
+    </article>
+
+    <article class="door import reveal">
+      <div class="door-head">
+        <span class="door-id">CASE C</span>
+        <span class="door-kind">Existing · import</span>
+      </div>
+      <h4>Import my live site</h4>
+      <p class="who"><strong>Real codebase already on GitHub</strong>, already deployed. Wants Kite to connect to it and start editing — the path the main track documents end-to-end.</p>
+      <div class="steps">
+        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
+        <span class="step"><span class="chip">Scan repo</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Replicate into Kite</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Edit + preview</span></span>
+      </div>
+      <div class="door-merge">
+        <span class="tag">Merges at</span>
+        <span class="at">04 · Scan</span>
+        <span>— the documented main path</span>
+      </div>
+    </article>
+
+    <article class="door import reveal">
+      <div class="door-head">
+        <span class="door-id">CASE D</span>
+        <span class="door-kind">Existing · empty repo</span>
+      </div>
+      <h4>Use my <em>blank</em> repo</h4>
+      <p class="who">Already created an <strong>empty GitHub repository</strong> and wants Kite to fill it. Repo exists; there's just nothing to import yet.</p>
+      <div class="steps">
+        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
+        <span class="step"><span class="chip">Detect empty repo</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Scaffold site into it</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Edit + preview</span></span>
+      </div>
+      <div class="door-merge">
+        <span class="tag">Merges at</span>
+        <span class="at">03 · Auth</span>
+        <span>→ scaffold, not import</span>
+      </div>
+    </article>
+
   </div>
 
   <!-- Architecture decisions -->
