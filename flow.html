@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kite AI — Import a website · the product flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #fafaf6;
+    --bg-2:      #f4f2eb;
+    --panel:     #ffffff;
+    --ink:       #0a0a0a;
+    --text:      #1a1a1a;
+    --text-2:    #4a4a4a;
+    --muted:     #8a8a8a;
+    --faint:     #c9c9c9;
+    --border:    #e8e5dc;
+    --border-2:  #d8d4c8;
+    --border-3:  #b9b4a4;
+    --dot:       rgba(0,0,0,0.045);
+    --green:      #047857;
+    --green-soft: #ecfdf5;
+    --green-tint: #d1fae5;
+    --green-line: #6ee7b7;
+    --amber:      #a16207;
+    --amber-soft: #fefce8;
+    --amber-line: #fcd34d;
+    --red:        #b91c1c;
+    --red-soft:   #fef2f2;
+    --red-line:   #fca5a5;
+    --blue:       #1d4ed8;
+    --blue-bright:#2563eb;
+    --blue-soft:  #eff6ff;
+    --blue-line:  #93c5fd;
+    --gold:       #92400e;
+    --gold-bright:#d97706;
+    --gold-soft:  #fffbeb;
+    --gold-tint:  #fef3c7;
+    --gold-line:  #f59e0b;
+    /* Kite brand orange (from product UI) */
+    --kite:       #e8501f;
+    --kite-soft:  #fff4ef;
+    --kite-line:  #ffc9b3;
+    --shadow-sm:  0 1px 0 rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:  0 1px 0 rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-lg:  0 1px 0 rgba(0,0,0,0.02), 0 20px 60px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.011em;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(1400px 800px at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .meshbg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; width: 700px; height: 700px; border-radius: 50%; filter: blur(120px); opacity: 0.20; animation: drift 20s ease-in-out infinite; }
+  .blob.b1 { background: var(--kite-line); top: -200px;  left: -200px; }
+  .blob.b2 { background: var(--blue-line); bottom: 0;    right: -200px; animation-delay: -7s; }
+  .blob.b3 { background: var(--gold-line); top: 40%;    left: 40%;     animation-delay: -14s; opacity: 0.14; }
+  @keyframes drift { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(80px, -60px) scale(1.15); } }
+
+  .wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 32px 24px 80px; }
+  ::selection { background: var(--gold-tint); color: var(--ink); }
+
+  /* Topbar */
+  .topbar {
+    position: sticky; top: 16px; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 40px; padding: 10px 14px;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+  .mark { width: 36px; height: 36px; border-radius: 9px; background: var(--ink); display: grid; place-items: center; box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 6px 14px rgba(0,0,0,0.12); position: relative; overflow: hidden; }
+  .mark::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,0.18), transparent 40%); }
+  .mark svg { width: 18px; height: 18px; color: #fff; position: relative; z-index: 1; }
+  .brand-text .t { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand-text .s { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .nav { display: flex; align-items: center; gap: 6px; }
+  .nav a { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-2); text-decoration: none; padding: 7px 12px; border-radius: 9px; border: 1px solid transparent; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .nav a:hover { background: var(--bg-2); color: var(--ink); }
+  .nav a.active { background: var(--ink); color: #fff; }
+  @media (max-width: 640px) { .nav a { padding: 6px 9px; font-size: 10.5px; } .brand-text .s { display:none; } }
+
+  /* Hero */
+  .hero { margin-bottom: 26px; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 18px; height: 1px; background: linear-gradient(90deg, transparent, var(--text-2)); }
+  h1 { margin: 0; font-family: 'Fraunces', 'Inter', serif; font-size: clamp(36px, 5.6vw, 60px); font-weight: 500; letter-spacing: -0.034em; line-height: 1.02; color: var(--ink); }
+  h1 .kite { color: var(--kite); font-style: italic; font-weight: 500; }
+  h1 .blue { color: var(--blue); font-style: italic; font-weight: 500; }
+  h1 .light { color: #a7a194; font-weight: 500; }
+  .dek { margin: 22px 0 0; color: var(--text-2); font-size: 15px; max-width: 840px; line-height: 1.65; }
+  .dek strong { color: var(--ink); font-weight: 600; }
+  .dek code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: var(--bg-2); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink); }
+  .reveal { opacity: 0; transform: translateY(20px); }
+  .reveal.in { opacity: 1; transform: translateY(0); transition: opacity .8s ease, transform .8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+  /* Stat row */
+  .statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 28px; }
+  .stat { position: relative; overflow: hidden; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 16px; box-shadow: var(--shadow-sm); transition: transform .22s cubic-bezier(0.2,0.8,0.2,1), box-shadow .22s ease; }
+  .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .stat:nth-child(1)::before { background: linear-gradient(90deg, var(--gold-bright), var(--gold-line)); }
+  .stat:nth-child(2)::before { background: linear-gradient(90deg, var(--kite), var(--kite-line)); }
+  .stat:nth-child(3)::before { background: linear-gradient(90deg, var(--blue), var(--blue-bright)); }
+  .stat:nth-child(4)::before { background: linear-gradient(90deg, var(--green), var(--green-line)); }
+  .stat .n { font-family: 'Fraunces', serif; font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: var(--ink); line-height: 1; letter-spacing: -0.02em; white-space: nowrap; }
+  .stat .l { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px; line-height: 1.4; }
+  @media (max-width: 720px) { .statrow { grid-template-columns: 1fr 1fr; } }
+
+  /* Plain-language intro panel */
+  .plain { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; margin-top: 22px; background: linear-gradient(135deg, var(--kite-soft), #fff); border: 1px solid var(--kite-line); border-radius: 16px; padding: 18px 22px; box-shadow: var(--shadow-sm); }
+  .plain .pico { width: 40px; height: 40px; border-radius: 11px; background: var(--kite); color: #fff; display: grid; place-items: center; font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .plain .ptxt { font-size: 14px; line-height: 1.65; color: var(--text); }
+  .plain .ptxt b { color: var(--ink); font-weight: 600; }
+  .plain .ptxt .lead { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 700; color: var(--kite); display: block; margin-bottom: 5px; }
+  @media (max-width: 620px) { .plain { grid-template-columns: 1fr; } }
+
+  /* At-a-glance journey map */
+  .mapwrap { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 20px; padding: 10px 24px; box-shadow: var(--shadow-md); }
+  .lane { display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: center; padding: 16px 14px; border-radius: 12px; border-bottom: 1px dashed var(--border); transition: background .2s ease; }
+  .lane:last-child { border-bottom: none; }
+  .lane:hover { background: rgba(0,0,0,0.018); }
+  .lane.split { background: linear-gradient(90deg, var(--gold-soft), rgba(255,255,255,0) 65%); border-bottom-color: var(--gold-line); }
+  .lane .lname { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--muted); line-height: 1.45; }
+  .lane .lname b { display: block; color: var(--ink); font-size: 14px; font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.012em; margin-bottom: 3px; text-transform: none; }
+  .lane.split .lname b { color: var(--gold); }
+  .track { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+  .mnode { display: inline-flex; flex-direction: column; gap: 2px; background: #fff; border: 1px solid var(--border-2); border-radius: 10px; padding: 8px 13px; box-shadow: var(--shadow-sm); transition: transform .2s ease; }
+  .mnode:hover { transform: translateY(-2px); }
+  .mnode .mt { font-size: 12.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+  .mnode .ms { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--muted); }
+  .mnode.kite  { border-color: var(--kite-line); background: var(--kite-soft); }
+  .mnode.blue  { border-color: var(--blue-line); background: var(--blue-soft); }
+  .mnode.green { border-color: var(--green-line); background: var(--green-soft); }
+  .mnode.gold  { border-color: var(--gold-line); background: var(--gold-soft); }
+  .mnode.gate  { border-color: var(--gold-line); background: linear-gradient(135deg, var(--gold-soft), var(--gold-tint)); font-weight: 700; }
+  .mnode.gate .mt { color: var(--gold); }
+  .marrow { color: var(--faint); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; }
+  .obranch { display: inline-flex; flex-direction: column; gap: 7px; }
+  .otag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 6px 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; }
+  .otag.ok { color: var(--green); background: var(--green-soft); border: 1px solid var(--green-line); }
+  .otag.no { color: var(--red);   background: var(--red-soft);   border: 1px solid var(--red-line); }
+  @media (max-width: 720px) { .lane { grid-template-columns: 1fr; gap: 10px; } }
+
+  /* Section header */
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; margin: 56px 0 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-head .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 8px; font-weight: 600; }
+  .section-head h2 { margin: 0; font-family: 'Fraunces', serif; font-size: clamp(26px, 3.6vw, 34px); font-weight: 500; letter-spacing: -0.027em; line-height: 1.1; color: var(--ink); }
+  .section-head h2 em { font-style: italic; color: var(--kite); font-weight: 500; }
+  .section-head h2 .red { color: var(--red); font-style: italic; }
+  .section-head p { margin: 10px 0 0; font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 680px; }
+  .section-head p strong { color: var(--ink); font-weight: 600; }
+  .section-head .right { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; line-height: 1.6; white-space: nowrap; }
+  @media (max-width: 720px) { .section-head { flex-direction: column; align-items: flex-start; gap: 10px; } .section-head .right { text-align: left; } }
+
+  /* Three doors */
+  .doors3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .door3 { position: relative; overflow: hidden; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px 18px; box-shadow: var(--shadow-sm); transition: transform .25s cubic-bezier(0.2,0.8,0.2,1), box-shadow .25s ease, border-color .2s ease; }
+  .door3:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .door3::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .door3.scratch { border-color: var(--gold-line); background-image: linear-gradient(180deg, var(--gold-soft) 0%, rgba(255,255,255,0.92) 80px); }
+  .door3.scratch::after { background: linear-gradient(90deg, var(--gold-bright), var(--gold-line)); }
+  .door3.import { border-color: var(--blue-line); background-image: linear-gradient(180deg, var(--blue-soft) 0%, rgba(255,255,255,0.92) 80px); }
+  .door3.import::after { background: linear-gradient(90deg, var(--blue), var(--blue-bright)); }
+  .door3.create { border-color: var(--green-line); background-image: linear-gradient(180deg, var(--green-soft) 0%, rgba(255,255,255,0.92) 80px); }
+  .door3.create::after { background: linear-gradient(90deg, var(--green), var(--green-line)); }
+  .door3 .opt { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #fff; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.06em; }
+  .door3.scratch .opt { background: var(--gold-bright); }
+  .door3.import .opt { background: var(--blue); }
+  .door3.create .opt { background: var(--green); }
+  .door3 h4 { margin: 12px 0 6px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; color: var(--ink); letter-spacing: -0.018em; line-height: 1.22; }
+  .door3 p { margin: 0 0 12px; font-size: 12.5px; color: var(--text-2); line-height: 1.55; }
+  .door3 p strong { color: var(--ink); font-weight: 600; }
+  .door3 .needs { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; padding: 5px 9px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; }
+  .door3 .needs.git { color: var(--blue); background: var(--blue-soft); border: 1px solid var(--blue-line); }
+  .door3 .needs.nogit { color: var(--green); background: var(--green-soft); border: 1px solid var(--green-line); }
+  .door3 .needs .sw { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  @media (max-width: 860px) { .doors3 { grid-template-columns: 1fr; } }
+
+  /* Figure / screenshot frame with browser chrome */
+  .shot { background: var(--panel); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); }
+  .shot .chrome { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: linear-gradient(180deg, #f7f5ef, #f0ede4); border-bottom: 1px solid var(--border-2); }
+  .shot .dots { display: flex; gap: 6px; }
+  .shot .dots i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .shot .dots i:nth-child(1){ background:#ec6a5e; } .shot .dots i:nth-child(2){ background:#f4bf4f; } .shot .dots i:nth-child(3){ background:#61c554; }
+  .shot .url { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-2); background: #fff; border: 1px solid var(--border); border-radius: 7px; padding: 4px 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot.zoom img { cursor: zoom-in; }
+
+  /* Step list (numbered, with screenshots) */
+  .steps-flow { position: relative; margin-top: 8px; }
+  .steps-flow::before { content: ""; position: absolute; left: 23px; top: 12px; bottom: 12px; width: 2px; background: linear-gradient(180deg, var(--kite-line), var(--blue-line), var(--green-line)); border-radius: 2px; opacity: 0.5; }
+  .stepblock { position: relative; padding-left: 64px; margin-bottom: 30px; }
+  .stepblock .badge { position: absolute; left: 0; top: 0; width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(150deg, #303030, #0a0a0a); color: #fff; display: grid; place-items: center; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, var(--shadow-md); z-index: 1; }
+  .stepblock.gate .badge { background: linear-gradient(150deg, #e2433f, var(--red)); }
+  .stepblock.win .badge  { background: linear-gradient(150deg, #0aa074, var(--green)); }
+  .stepblock .st-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .stepblock .tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: var(--muted); padding: 3px 8px; border: 1px solid var(--border-2); border-radius: 5px; }
+  .stepblock.gate .tag { color: var(--red); border-color: var(--red-line); background: var(--red-soft); }
+  .stepblock h3 { margin: 0; font-family: 'Fraunces', serif; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1.2; }
+  .stepblock .desc { margin: 8px 0 14px; font-size: 13.5px; line-height: 1.62; color: var(--text-2); max-width: 760px; }
+  .stepblock .desc strong { color: var(--ink); font-weight: 600; }
+  .stepblock .desc code, .callout code, .door3 code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--bg-2); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink); }
+  .stepblock .quote { margin: 0 0 14px; padding: 10px 14px; border-left: 3px solid var(--kite); background: var(--kite-soft); border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.55; color: var(--text); }
+  .stepblock .quote .who { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--kite); font-weight: 700; display: block; margin-bottom: 3px; }
+  @media (max-width: 640px) { .stepblock { padding-left: 0; } .steps-flow::before { display: none; } .stepblock .badge { position: static; margin-bottom: 12px; } }
+
+  /* Callout */
+  .callout { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; border-radius: 14px; padding: 16px 20px; position: relative; overflow: hidden; margin-top: 8px; }
+  .callout.gate { background: linear-gradient(135deg, var(--red-soft), #fff); border: 1px solid var(--red-line); }
+  .callout .ctag { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 700; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 6px; white-space: nowrap; }
+  .callout.gate .ctag { color: var(--red); border: 1px solid var(--red-line); }
+  .callout .ctext { font-size: 13.5px; line-height: 1.6; color: var(--text); }
+  .callout .ctext strong { color: var(--ink); font-weight: 600; }
+  @media (max-width: 620px) { .callout { grid-template-columns: 1fr; } }
+
+  /* Two-column figure+text */
+  .pair { display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; align-items: center; }
+  .pair.flip { grid-template-columns: 1fr 1.15fr; }
+  .pair .copy h3 { margin: 0 0 8px; font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+  .pair .copy p { margin: 0 0 12px; font-size: 13.5px; line-height: 1.62; color: var(--text-2); }
+  .pair .copy p strong { color: var(--ink); font-weight: 600; }
+  .pair .copy code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--bg-2); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink); }
+  @media (max-width: 860px) { .pair, .pair.flip { grid-template-columns: 1fr; } }
+
+  /* Permission chips */
+  .perms { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; }
+  .perm { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border-2); background: #fff; color: var(--text); display: inline-flex; align-items: center; gap: 7px; }
+  .perm .ro { color: var(--green); font-weight: 700; }
+  .perm .rw { color: var(--amber); font-weight: 700; }
+
+  /* Three import-flavours summary */
+  .flavours { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .flav { background: rgba(255,255,255,0.9); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow-sm); transition: transform .25s ease, box-shadow .25s ease; }
+  .flav:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .flav .k { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--kite); margin-bottom: 8px; }
+  .flav h4 { margin: 0 0 6px; font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; letter-spacing: -0.018em; color: var(--ink); line-height: 1.25; }
+  .flav p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+  .flav p code { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; background: var(--bg-2); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink); }
+  @media (max-width: 860px) { .flavours { grid-template-columns: 1fr; } }
+
+  .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .footer a { color: var(--text-2); text-decoration: none; border-bottom: 1px dashed var(--border-2); }
+
+  /* Lightbox */
+  .lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(10,10,10,0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 32px; cursor: zoom-out; }
+  .lightbox.on { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .blob { animation: none; }
+  }
+  @media (max-width: 720px) { .wrap { padding: 16px 14px 60px; } }
+</style>
+</head>
+<body>
+
+<div class="meshbg" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="brand" href="index.html">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 L19 9 L12 22 L5 9 Z"/>
+          <line x1="12" y1="2" x2="12" y2="22"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="t">Kite AI</div>
+        <div class="s">GitHub import · the product flow</div>
+      </div>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Architecture</a>
+      <a href="flow.html" class="active">The product flow</a>
+    </nav>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow reveal">Captured live from staging.kite.ai · every step is a real screen</div>
+    <h1 class="reveal">Bring a website <span class="blue">into Kite.</span><br><span class="light">Three doors in. One </span><span class="kite">Next.js</span><span class="light"> gate.</span></h1>
+    <p class="dek reveal">This is the <strong>actual product</strong>, not a sketch. A user lands on their Kite dashboard and starts a website three ways — <strong>from scratch</strong>, by <strong>importing an existing GitHub repo</strong>, or by <strong>creating a fresh repo in GitHub</strong>. Importing real code requires the <strong>Kite GitHub App</strong> to be connected; once it is, Kite <strong>resolves the repo by name</strong>, confirms before replacing anything, and pulls it in from <code>main</code>. Two guardrails protect the user: Kite <strong>only imports Next.js projects</strong>, and it surfaces any <strong>required environment variables</strong> before the site can run. Every screen below is captured from the live staging build.</p>
+
+    <div class="statrow reveal">
+      <div class="stat"><div class="n">3</div><div class="l">Ways to start<br>a website</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">GitHub App<br>to connect</div></div>
+      <div class="stat"><div class="n">Next.js</div><div class="l">Only stack<br>imported</div></div>
+      <div class="stat"><div class="n">2-way</div><div class="l">Sync · push<br>&amp; pull on main</div></div>
+    </div>
+
+    <div class="plain reveal">
+      <div class="pico">i</div>
+      <div class="ptxt">
+        <span class="lead">If you only read one thing</span>
+        Kite lets people build and edit websites with AI. To work on a <b>website that already lives on GitHub</b>, Kite first needs <b>permission to read that repo</b> (a one-time GitHub connection). The user just <b>names the repo in chat</b>; Kite finds it, asks for a yes before overwriting anything, and pulls it in. The single firm rule: <b>Kite only imports Next.js projects</b> — anything else is politely refused, with the original site left untouched.
+      </div>
+    </div>
+  </div>
+
+  <!-- AT A GLANCE MAP -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">The whole journey · on one screen</div>
+      <h2>Five steps, one decision.</h2>
+      <p>Before the detail, here's the entire path at a glance. Read it top to bottom: the user picks a door, connects GitHub if needed, Kite finds and confirms the repo, the <strong>Next.js check</strong> decides the outcome, and a passing repo goes live and stays in sync.</p>
+    </div>
+    <div class="right">read top<br>↓ to bottom</div>
+  </div>
+
+  <div class="mapwrap reveal">
+    <div class="lane">
+      <div class="lname"><b>1 · Start</b>Pick a door</div>
+      <div class="track">
+        <span class="mnode gold"><span class="mt">From scratch</span><span class="ms">no GitHub</span></span>
+        <span class="mnode blue"><span class="mt">Import from GitHub</span><span class="ms">existing repo</span></span>
+        <span class="mnode green"><span class="mt">Create in GitHub</span><span class="ms">brand-new repo</span></span>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lname"><b>2 · Connect</b>GitHub doors only</div>
+      <div class="track">
+        <span class="mnode kite"><span class="mt">Install Kite GitHub App</span><span class="ms">you choose the scope</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode"><span class="mt">Connected to the org</span><span class="ms">revocable anytime</span></span>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lname"><b>3 · Find it</b>Kite resolves the repo</div>
+      <div class="track">
+        <span class="mnode"><span class="mt">Name it in chat</span><span class="ms">"import from test_1"</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode"><span class="mt">Kite finds the match</span><span class="ms">appsmithorg/test_1</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode"><span class="mt">Confirm before replacing</span><span class="ms">yes / no</span></span>
+      </div>
+    </div>
+    <div class="lane split">
+      <div class="lname"><b>4 · The gate</b>Next.js or nothing</div>
+      <div class="track">
+        <span class="mnode gate"><span class="mt">◇ Is it a Next.js project?</span><span class="ms">the one hard check</span></span>
+        <span class="marrow">→</span>
+        <span class="obranch">
+          <span class="otag ok">✓ PASS — continue below</span>
+          <span class="otag no">✗ NO — refused, original site kept, pick another repo</span>
+        </span>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lname"><b>5 · Go live</b>After a pass</div>
+      <div class="track">
+        <span class="mnode green"><span class="mt">Import from main</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode green"><span class="mt">Add any secrets</span><span class="ms">e.g. NAME</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode green"><span class="mt">Live preview</span></span>
+        <span class="marrow">→</span>
+        <span class="mnode green"><span class="mt">Two-way sync</span><span class="ms">push &amp; pull on main</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE DOORS -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">The entry · one menu, three doors</div>
+      <h2>"Start something <em>now.</em>"</h2>
+      <p>From the dashboard, a single button opens three real choices. Two of them touch GitHub; one never does. Which door the user picks decides whether they ever see a repository at all.</p>
+    </div>
+    <div class="right">1 no-Git path<br>2 GitHub paths</div>
+  </div>
+
+  <div class="shot zoom reveal" style="margin-bottom:18px;">
+    <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/ · Your websites</div></div>
+    <img src="assets/01-dashboard-start-menu.png" alt="Kite dashboard with the 'Start something now' menu open, showing three options: Start from scratch, Import from GitHub, Create new in GitHub." loading="lazy">
+  </div>
+
+  <div class="doors3">
+    <article class="door3 scratch reveal">
+      <span class="opt">START FROM SCRATCH</span>
+      <h4>Generate a brand-new site</h4>
+      <p>Describe the website in plain language and Kite <strong>builds it from nothing</strong>. No repository, no GitHub account, no setup.</p>
+      <span class="needs nogit"><span class="sw"></span>No GitHub needed</span>
+    </article>
+    <article class="door3 import reveal">
+      <span class="opt">IMPORT FROM GITHUB</span>
+      <h4>Pull in an existing repo</h4>
+      <p>Pick a repository the <strong>Kite GitHub App can access</strong> and Kite imports its code into a new website. The path this page documents end-to-end.</p>
+      <span class="needs git"><span class="sw"></span>Requires GitHub App</span>
+    </article>
+    <article class="door3 create reveal">
+      <span class="opt">CREATE NEW IN GITHUB</span>
+      <h4>New repo, owned by the user</h4>
+      <p>Kite <strong>creates a fresh GitHub repository</strong> and a website linked to it, then generates the site afterwards — so it lives in the user's own GitHub from day one.</p>
+      <span class="needs git"><span class="sw"></span>Requires GitHub App</span>
+    </article>
+  </div>
+
+  <!-- TWO GITHUB MODALS -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">The two GitHub doors, up close</div>
+      <h2>Import an existing repo, or mint a new one.</h2>
+      <p>Both GitHub paths start the same way — they need the Kite GitHub App to have access. If it doesn't, each modal routes the user straight to <strong>Configure GitHub App</strong>.</p>
+    </div>
+  </div>
+
+  <div class="pair reveal" style="margin-bottom:26px;">
+    <div class="shot zoom">
+      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/ · Import from GitHub</div></div>
+      <img src="assets/02-import-from-github.png" alt="Import from GitHub modal: pick a repository the Kite GitHub App can access, with a search field and a Configure GitHub App button." loading="lazy">
+    </div>
+    <div class="copy">
+      <h3>Import from GitHub</h3>
+      <p>“Pick a repository the Kite GitHub App can access. We'll import its code into a new website.” The user searches their repos and selects one.</p>
+      <p>When no repos load, Kite is explicit about why: <strong>“Make sure your GitHub account is connected, then use Configure GitHub App to grant access.”</strong> Access is never assumed — it's requested.</p>
+    </div>
+  </div>
+
+  <div class="pair flip reveal">
+    <div class="copy">
+      <h3>Create new in GitHub</h3>
+      <p>“We'll create a new GitHub repository and a website linked to it. You can generate the site afterwards.”</p>
+      <p>The user names the repo — e.g. <code>my-website</code> — and Kite provisions both the repository and the linked Kite app in one step. The same <strong>Configure GitHub App</strong> affordance sits inline for users who haven't connected yet.</p>
+    </div>
+    <div class="shot zoom">
+      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/ · Create new in GitHub</div></div>
+      <img src="assets/03-create-new-in-github.png" alt="Create new in GitHub modal with a repository name field and Create button." loading="lazy">
+    </div>
+  </div>
+
+  <!-- END TO END WALKTHROUGH -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">The end-to-end import · captured step by step</div>
+      <h2>From a chat message to a <em>live, synced</em> site.</h2>
+      <p>This is the real sequence a user walks through when importing an existing repo from inside an app. Connect → resolve → confirm → import → configure → sync. Click any screen to enlarge.</p>
+    </div>
+    <div class="right">9 screens<br>1 hard gate</div>
+  </div>
+
+  <div class="steps-flow">
+
+    <!-- 01 -->
+    <div class="stepblock reveal">
+      <div class="badge">1</div>
+      <div class="st-head"><span class="tag">In-chat · import</span><h3>Ask Kite to import — right in the chat</h3></div>
+      <p class="desc">The user doesn't have to leave the conversation. Typing <code>import from test_1</code> kicks off the import. Kite checks the path immediately — but it can't pull code it isn't allowed to see yet.</p>
+      <div class="quote"><span class="who">Kite</span>“I'm checking that repo import path now so I can bring the site in cleanly. I can import that repo, but your GitHub account is <strong>not connected here yet</strong>. Please connect GitHub in Settings, then send me ‘import from test_1’ again and I'll take it from there.”</div>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/design · Next.js</div></div>
+        <img src="assets/05-chat-import-not-connected.png" alt="Chat where the user types 'import from test_1' and Kite replies that the GitHub account is not connected yet, pointing to Settings." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="stepblock reveal">
+      <div class="badge">2</div>
+      <div class="st-head"><span class="tag">Integrations · connect</span><h3>Connect GitHub from Integrations</h3></div>
+      <p class="desc">On the <strong>Integrations</strong> page, GitHub sits at the top of the catalogue — “Connect your GitHub account for repository access.” One click on <strong>Connect</strong> starts the GitHub App install.</p>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/integrations</div></div>
+        <img src="assets/04-integrations-connect-github.png" alt="Integrations page with GitHub at the top and a Connect button." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="stepblock reveal">
+      <div class="badge">3</div>
+      <div class="st-head"><span class="tag">github.com · install</span><h3>Install the Kite GitHub App with scoped permissions</h3></div>
+      <p class="desc">The user is handed off to GitHub to install <strong>Kite Github App</strong> on their organization (here, <code>Appsmith</code>). They choose <strong>All repositories</strong> or <strong>Only select repositories</strong> — access is theirs to scope, repo by repo if they want.</p>
+      <div class="perms">
+        <span class="perm"><span class="ro">READ</span> metadata</span>
+        <span class="perm"><span class="rw">READ + WRITE</span> code</span>
+        <span class="perm"><span class="rw">READ + WRITE</span> workflows</span>
+        <span class="perm"><span class="rw">READ + WRITE</span> administration</span>
+        <span class="perm"><span class="rw">READ + WRITE</span> artifact metadata</span>
+      </div>
+      <div class="shot zoom" style="margin-top:14px;">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">github.com/apps/kite-github-app-staging/installations/new</div></div>
+        <img src="assets/06-github-app-install.png" alt="GitHub App install screen for Kite Github App showing repository scope choice and the requested read/write permissions." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="stepblock reveal win">
+      <div class="badge">4</div>
+      <div class="st-head"><span class="tag">Integrations · connected</span><h3>GitHub is connected</h3></div>
+      <p class="desc">Back in Kite, GitHub now reads <strong>“Connected as appsmithorg”</strong> with a <strong>Disconnect</strong> control. The credential the user gave Kite is the <strong>GitHub App installation</strong> itself — scoped, revocable, and visible at any time.</p>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/integrations · Connected</div></div>
+        <img src="assets/07-integrations-connected.png" alt="Integrations page showing GitHub connected as appsmithorg with a Disconnect button." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="stepblock reveal">
+      <div class="badge">5</div>
+      <div class="st-head"><span class="tag">In-chat · resolve + confirm</span><h3>Kite resolves the repo by name and asks before replacing</h3></div>
+      <p class="desc">The user retries (“try now”). This time Kite <strong>automatically determines whether the repo exists</strong> and finds it: <strong>“I found one match: appsmithorg/test_1.”</strong> Because importing <strong>replaces the current site</strong>, Kite never does it silently — it presents an explicit confirmation with <em>Yes, import it</em> / <em>No, keep current site</em>.</p>
+      <div class="quote"><span class="who">Kite</span>“I'm trying the repo import again now and checking whether GitHub is connected. I found one match: <strong>appsmithorg/test_1</strong>. Importing it will replace the current site in this app.”</div>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/design</div></div>
+        <img src="assets/08-chat-auto-match-confirm.png" alt="Chat showing Kite found one matching repo appsmithorg/test_1 and presenting a confirmation card before importing." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="stepblock reveal">
+      <div class="badge">6</div>
+      <div class="st-head"><span class="tag">In-chat · import + env var</span><h3>Import from <code>main</code> — and flag what the repo needs to run</h3></div>
+      <p class="desc">On confirmation, Kite imports <strong>appsmithorg/test_1 from the <code>main</code> branch</strong> and replaces the current site. It then reads the project and tells the user exactly what's missing before anything will work: <strong>one environment variable, <code>NAME</code></strong>. The live preview begins loading in parallel.</p>
+      <div class="quote"><span class="who">Kite</span>“Imported appsmithorg/test_1 from the <strong>main</strong> branch and replaced the current site in this app. This repo needs one environment variable before everything can work properly: <strong>NAME</strong>. You can add it in the app's environment variable settings, then I can help you check the site or make edits.”</div>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/preview · Main</div></div>
+        <img src="assets/09-chat-imported-env-var.png" alt="Chat confirming the import from main, flagging the required NAME environment variable, with a preview loading on the right." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="stepblock reveal">
+      <div class="badge">7</div>
+      <div class="st-head"><span class="tag">Secrets · credentials</span><h3>Add the credential in the Secret vault</h3></div>
+      <p class="desc">The required value lives in Kite's <strong>Secret vault</strong> — backed by <code>backend/.env</code>. The user adds <code>NAME</code> as a key, sets its value, and the imported site has what it needs to run. Secrets are masked, copyable, and deletable per row.</p>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/secrets</div></div>
+        <img src="assets/10-secrets-vault.png" alt="Secrets vault page showing the NAME key tied to backend/.env." loading="lazy">
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="stepblock reveal win">
+      <div class="badge">8</div>
+      <div class="st-head"><span class="tag">Settings · repository</span><h3>The repo is linked — and sync runs both ways</h3></div>
+      <p class="desc">In <strong>Settings → Repository</strong>, the website is now bound to <strong>appsmithorg/test_1</strong> on branch <code>main</code>. From here the link is fully two-way: <strong>Sync to GitHub</strong> pushes Kite's edits out as commits, <strong>Pull</strong> brings GitHub changes back in, and <strong>Change repository</strong> / <strong>Disconnect</strong> keep the user in control.</p>
+      <div class="shot zoom">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/settings</div></div>
+        <img src="assets/11-settings-repository-sync.png" alt="Settings page Repository section showing appsmithorg/test_1 on branch main with Sync to GitHub, Pull, Change repository, and Disconnect." loading="lazy">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- THE GATE -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">The guardrail · the one hard stop</div>
+      <h2>Kite imports Next.js — and <span class="red">only</span> Next.js.</h2>
+      <p>The import path is deliberately narrow. If the resolved repository isn't a Next.js project, Kite refuses the import outright and says so plainly — <strong>after</strong> confirming, but <strong>before</strong> touching the current site. No half-imported, broken state.</p>
+    </div>
+  </div>
+
+  <div class="stepblock gate reveal" style="padding-left:64px;">
+    <div class="badge">!</div>
+    <div class="st-head"><span class="tag">In-chat · rejected</span><h3>“This is not a Next.js project.”</h3></div>
+    <p class="desc">A user asks to <code>import gallery</code>. Kite first <strong>disambiguates the intent</strong> (“‘Import gallery' could mean a couple of different things, so I want to point us at the right door first”), then resolves the repo to <strong>appsmithorg/kite-gallery</strong> and confirms. On import, the stack check fails — and Kite stops, cleanly, without replacing the existing site.</p>
+    <div class="quote" style="border-left-color:var(--red); background:var(--red-soft);"><span class="who" style="color:var(--red);">Kite</span>“I can't import that repo because <strong>it is not a Next.js project, and imports here only support Next.js repos</strong>. If you want, I can help you find a different repo to import.”</div>
+    <div class="shot zoom">
+      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">staging.kite.ai/app-details/…/design · Next.js</div></div>
+      <img src="assets/12-chat-not-nextjs-error.png" alt="Chat where Kite resolves appsmithorg/kite-gallery, then refuses the import because it is not a Next.js project." loading="lazy">
+    </div>
+  </div>
+
+  <div class="callout gate reveal" style="margin-top:18px;">
+    <span class="ctag">Why it matters</span>
+    <div class="ctext">A narrow, enforced contract — <strong>Next.js only</strong> — is what lets Kite promise a clean import every time. The check runs at the last safe moment: the current site is preserved, the user gets a precise reason, and Kite immediately offers the next move. <strong>Predictable failure is a feature, not a gap.</strong></div>
+  </div>
+
+  <!-- THREE FLAVOURS OF IMPORT -->
+  <div class="section-head reveal">
+    <div>
+      <div class="kicker">How to read the import</div>
+      <h2>Three things make the import feel effortless.</h2>
+      <p>The same engine powers every entry door. What the user experiences as “it just worked” is really three behaviours stacked together.</p>
+    </div>
+  </div>
+
+  <div class="flavours reveal">
+    <div class="flav">
+      <div class="k">01 · Conversational</div>
+      <h4>Import from the chat</h4>
+      <p>No forms to hunt for. The user types <code>import from test_1</code> and Kite drives the rest from inside the conversation — including telling them what's blocking it.</p>
+    </div>
+    <div class="flav">
+      <div class="k">02 · Connected &amp; credentialed</div>
+      <h4>Access is explicit</h4>
+      <p>Real code needs the <strong>GitHub App</strong> connected and any required secrets (like <code>NAME</code>) supplied. Kite asks for exactly what it needs, when it needs it — never more.</p>
+    </div>
+    <div class="flav">
+      <div class="k">03 · Auto-resolved</div>
+      <h4>Kite finds the repo for you</h4>
+      <p>Given a name, Kite <strong>determines whether the repo exists</strong>, reports the match (<code>appsmithorg/test_1</code>), and confirms before replacing anything irreversible.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Kite AI · GitHub import · the product flow · 15 Jun 2026</span>
+    <span><a href="index.html">← Back to the architecture</a></span>
+  </div>
+
+</div>
+
+<div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('in'), Math.min(i, 6) * 50);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => io.observe(el));
+
+    // Lightbox
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('.shot.zoom img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lb.classList.add('on');
+      });
+    });
+    lb.addEventListener('click', () => lb.classList.remove('on'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('on'); });
+  });
+</script>
+
+</body>
+</html>

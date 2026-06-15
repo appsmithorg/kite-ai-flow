@@ -107,6 +107,11 @@
   .mark svg { width: 18px; height: 18px; color: #fff; position: relative; z-index: 1; }
   .brand-text .t { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
   .brand-text .s { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .nav { display: flex; align-items: center; gap: 6px; }
+  .nav a { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-2); text-decoration: none; padding: 7px 12px; border-radius: 9px; border: 1px solid transparent; transition: background .2s ease, color .2s ease; }
+  .nav a:hover { background: var(--bg-2); color: var(--ink); }
+  .nav a.active { background: var(--ink); color: #fff; }
+  @media (max-width: 640px) { .nav a { padding: 6px 9px; font-size: 10.5px; } .brand-text .s { display: none; } }
 
   /* Hero */
   .hero { margin-bottom: 32px; }
@@ -115,7 +120,7 @@
   h1 { margin: 0; font-family: 'Fraunces', 'Inter', serif; font-size: clamp(38px, 6vw, 64px); font-weight: 500; letter-spacing: -0.034em; line-height: 1.0; color: var(--ink); }
   h1 .gold { color: var(--gold-bright); font-style: italic; font-weight: 500; }
   h1 .blue { color: var(--blue);        font-style: italic; font-weight: 500; }
-  h1 .light { color: var(--faint); font-weight: 500; }
+  h1 .light { color: #a7a194; font-weight: 500; }
   .reveal { opacity: 0; transform: translateY(20px); }
   .reveal.in { opacity: 1; transform: translateY(0); transition: opacity .8s ease, transform .8s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .dek { margin: 22px 0 0; color: var(--text-2); font-size: 15px; max-width: 820px; line-height: 1.65; }
@@ -123,6 +128,15 @@
   .dek .pill-gold { color: var(--gold); background: var(--gold-tint); padding: 1px 8px; border-radius: 5px; font-weight: 600; border: 1px solid var(--gold-line); }
   .dek .pill-blue { color: var(--blue); background: var(--blue-soft); padding: 1px 8px; border-radius: 5px; font-weight: 600; border: 1px solid var(--blue-line); }
   .dek code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: var(--bg-2); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink); }
+
+  /* Real-product banner */
+  .prodbanner { display: flex; align-items: center; gap: 14px; margin-top: 22px; padding: 14px 18px; border-radius: 14px; text-decoration: none; color: inherit; background: linear-gradient(135deg, #fff4ef, #ffffff); border: 1px solid #ffc9b3; box-shadow: var(--shadow-sm); transition: transform .2s ease, box-shadow .2s ease; }
+  .prodbanner:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .prodbanner .pb-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: #e8501f; padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
+  .prodbanner .pb-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+  .prodbanner .pb-text strong { color: var(--ink); font-weight: 600; }
+  .prodbanner .pb-go { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #e8501f; white-space: nowrap; }
+  @media (max-width: 640px) { .prodbanner { flex-wrap: wrap; } .prodbanner .pb-go { margin-left: 0; } }
 
   /* Top two buttons */
   .twobtns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; perspective: 1200px; }
@@ -180,24 +194,16 @@
 
   /* SVG styles */
   .track-shared { stroke: var(--ink);       stroke-width: 2.5; fill: none; }
-  .track-gold   { stroke: var(--gold-line); stroke-width: 3;   fill: none; }
-  .track-blue   { stroke: var(--blue);      stroke-width: 3;   fill: none; }
   .track-drop   { stroke: var(--red);       stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
   .track-branch { stroke: var(--text-2); stroke-width: 1.8; fill: none; opacity: 0.7; }
-  .track-branch.dashed { stroke-dasharray: 4 4; opacity: 0.55; }
 
   .draw-on-load { /* visible by default; GSAP overrides for draw-in animation */ }
   .js-draw .draw-on-load { stroke-dasharray: 3000; stroke-dashoffset: 3000; }
 
   /* Continuous flow pulses */
-  .pulse-shared, .pulse-gold, .pulse-blue { fill: none; stroke-width: 5; stroke-linecap: round; opacity: 0.95; pointer-events: none; }
-  .pulse-shared { stroke: var(--ink); stroke-dasharray: 14 3000; filter: drop-shadow(0 0 4px rgba(0,0,0,0.25)); animation: pulse-flow 6s linear infinite; }
-  .pulse-gold   { stroke: var(--gold-bright); stroke-dasharray: 14 3000; filter: drop-shadow(0 0 8px rgba(245,158,11,0.7)); animation: pulse-flow 6s linear infinite; }
-  .pulse-blue   { stroke: var(--blue-bright); stroke-dasharray: 14 3000; filter: drop-shadow(0 0 8px rgba(37,99,235,0.6));  animation: pulse-flow 6s linear infinite; }
+  .pulse-shared { fill: none; stroke-width: 5; stroke-linecap: round; opacity: 0.95; pointer-events: none; stroke: var(--ink); stroke-dasharray: 14 3000; filter: drop-shadow(0 0 4px rgba(0,0,0,0.25)); animation: pulse-flow 6s linear infinite; }
   .pulse-shared.delay-1 { animation-delay: -2s; }
   .pulse-shared.delay-2 { animation-delay: -4s; }
-  .pulse-gold.delay-1   { animation-delay: -3s; }
-  .pulse-blue.delay-1   { animation-delay: -3s; }
   @keyframes pulse-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -3014; } }
 
   /* Stations */
@@ -220,7 +226,6 @@
   .lbl-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--muted); letter-spacing: 0.14em; font-weight: 600; }
   .lbl-name { font-size: 13.5px; font-weight: 600; fill: var(--ink); letter-spacing: -0.015em; }
   .lbl-sub  { font-size: 11.5px; fill: var(--text-2); }
-  .lbl-mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--text); }
   .lbl-decision { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 500; fill: var(--ink); letter-spacing: -0.018em; }
   .lbl-decision-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--gold); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; }
   .lbl-drop { font-size: 11px; fill: var(--red); font-weight: 600; }
@@ -320,7 +325,6 @@
   }
   .step.gold .chip { color: var(--gold); border-color: var(--gold-line); background: var(--gold-soft); }
   .step.blue .chip { color: var(--blue); border-color: var(--blue-line); background: var(--blue-soft); }
-  .step.hidden .chip { color: var(--muted); border-style: dashed; background: rgba(255,255,255,0.5); }
   .step .arrow { color: var(--faint); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 0 5px; }
 
   .door-merge {
@@ -399,77 +403,81 @@
         </svg>
       </div>
       <div class="brand-text">
-        <div class="t">Kite AI CMO</div>
-        <div class="s">GitHub integration · v0.5 · combined gold + blue</div>
+        <div class="t">Kite AI</div>
+        <div class="s">GitHub integration · the architecture</div>
       </div>
     </div>
+    <nav class="nav">
+      <a href="index.html" class="active">Architecture</a>
+      <a href="flow.html">The product flow</a>
+    </nav>
   </div>
 
   <div class="hero">
-    <div class="eyebrow reveal">The architecture · one flow · two surfaces · two-way sync</div>
-    <h1 class="reveal">Edit in <span class="gold">Kite.</span> Ship via <span class="blue">GitHub.</span><br><span class="light">Both surfaces stay in sync.</span></h1>
-    <p class="dek reveal">The previous draft framed <span class="pill-gold">Gold</span> and <span class="pill-blue">Blue</span> as a choice — full takeover or PR-only. <strong>That fork is gone.</strong> The new architecture combines them: <strong>all editing happens in the Kite environment</strong> (gold), and <strong>every change ships as a PR on the customer's GitHub repo</strong> (blue). Customer keeps their domain, their CI/CD, their existing deploy preview. Kite hosts an additional preview at <code>appsmith.kite.space</code>. When a PR merges to <code>main</code>, both surfaces update — webhook-driven, not polled. Feature branches are namespaced <code>kite/&lt;slug&gt;</code> so the two-way sync stays scoped.</p>
+    <div class="eyebrow reveal">The architecture · one app · one linked repo · Next.js · explicit two-way sync</div>
+    <h1 class="reveal">Build in <span class="gold">Kite.</span> Back it with <span class="blue">GitHub.</span><br><span class="light">One app, one repo, kept in sync.</span></h1>
+    <p class="dek reveal">This replaces the earlier "two surfaces, webhook-synced" draft with what actually shipped. Kite is an AI website builder: every website is a <span class="pill-gold">Kite app</span> that can be <strong>linked to a single GitHub repository</strong> on one branch (<code>main</code> today). The bridge is the <span class="pill-blue">Kite GitHub App</span> — installed on the customer's org with <strong>scoped, revocable</strong> permissions. Users start three ways — from scratch, import an existing repo, or create a new one — or just type <code>import from &lt;repo&gt;</code> in chat. Kite <strong>resolves the repo by name, confirms before it replaces anything</strong>, and enforces one hard rule: <strong>imports must be Next.js projects</strong>. Editing, the live preview, secrets and publishing all live <strong>inside the Kite app</strong>; the source of truth stays in GitHub. Sync is <strong>explicit and two-way</strong> — <code>Sync to GitHub</code> pushes, <code>Pull</code> brings changes back.</p>
+
+    <a class="prodbanner reveal" href="flow.html">
+      <span class="pb-badge">Live product</span>
+      <span class="pb-text">This page is the model. Want it <strong>backed by real screenshots</strong>? The companion walks the actual import flow — three entry doors, the GitHub-App connection, the <strong>Next.js-only gate</strong>, secrets and two-way sync — captured screen by screen from <strong>staging.kite.ai</strong>.</span>
+      <span class="pb-go">The product flow →</span>
+    </a>
 
     <div class="twobtns">
       <div class="twobtn gold reveal" data-tilt>
         <div class="twobtn-glare"></div>
         <div class="twobtn-content">
-          <div class="twobtn-k"><span class="sw"></span>Gold · Kite environment</div>
-          <h3>Where the change is drafted &amp; live-previewed</h3>
-          <p>Kite mirrors the codebase, runs the editing loop, hosts the working preview at <code>appsmith.kite.space</code>. The preview tracks <code>main</code> always — there is <strong>no <code>kite/main</code> branch</strong>; that ambiguity is the thing we explicitly removed.</p>
+          <div class="twobtn-k"><span class="sw"></span>Gold · The Kite app</div>
+          <h3>Where you build, edit &amp; preview</h3>
+          <p>Each website is a Kite app with <strong>Website, Code, Secrets, Content, Analytics &amp; Growth</strong> tabs. You edit by chat or directly, see an <strong>in-app live preview</strong>, and hit <code>Publish</code>. The app <em>is</em> the workspace — no separate preview domain to reason about.</p>
         </div>
       </div>
       <div class="twobtn blue reveal" data-tilt>
         <div class="twobtn-glare"></div>
         <div class="twobtn-content">
-          <div class="twobtn-k"><span class="sw"></span>Blue · Customer GitHub</div>
-          <h3>Where every change ships from</h3>
-          <p>Each Kite session opens a feature branch like <code>kite/hero-headline-change</code> and a PR on the customer's own repo. Their CI/CD, their reviewers, their domain. <strong>No major refactor</strong> — Kite adapts to whatever they already have.</p>
+          <div class="twobtn-k"><span class="sw"></span>Blue · The linked GitHub repo</div>
+          <h3>The source of truth</h3>
+          <p>The <strong>Kite GitHub App</strong> links <strong>one repository on one branch</strong>. Code lives in the customer's own GitHub — e.g. <code>appsmithorg/test_1</code> on <code>main</code>. Access is scoped to the repos they pick and <strong>revocable any time</strong> from Integrations or Settings → Repository.</p>
         </div>
       </div>
     </div>
 
     <div class="sync-strip reveal">
       <div class="sync-side gold">
-        <div class="tag">Kite-hosted preview</div>
-        <div class="url">appsmith.kite.space</div>
-        <div class="note">Tracks current <code style="font-family:'JetBrains Mono',monospace;font-size:11px;">main</code>. Updates on PR merge.</div>
+        <div class="tag">The Kite app</div>
+        <div class="url">this website</div>
+        <div class="note">Edit · live preview · <code style="font-family:'JetBrains Mono',monospace;font-size:11px;">Publish</code>, all in-app.</div>
       </div>
       <div class="sync-mid">
-        <div class="arrows">⇄</div>
-        <div class="label">Two-way sync</div>
-        <div class="label" style="color: var(--text-2);">webhook-driven · scoped to <code style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg-2);padding:0 4px;border-radius:3px;">kite/*</code></div>
+        <div class="arrows">⇅</div>
+        <div class="label">Explicit two-way sync</div>
+        <div class="label" style="color: var(--text-2);"><code style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg-2);padding:0 4px;border-radius:3px;">Sync to GitHub</code> ↑ · <code style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg-2);padding:0 4px;border-radius:3px;">Pull</code> ↓ · on main</div>
       </div>
       <div class="sync-side blue">
-        <div class="tag">Customer's own deploy</div>
-        <div class="url">appsmith.com</div>
-        <div class="note">AWS / Vercel / wherever they are. Untouched.</div>
+        <div class="tag">GitHub repository</div>
+        <div class="url">appsmithorg/test_1</div>
+        <div class="note">Branch: <code style="font-family:'JetBrains Mono',monospace;font-size:11px;">main</code> · customer-owned.</div>
       </div>
     </div>
   </div>
 
   <div class="flow-stage reveal">
     <div class="flow-head">
-      <div class="flow-title">The flow · one track, two surfaces</div>
+      <div class="flow-title">The flow · connect → import → edit → sync</div>
       <div class="flow-legend">
         <span class="leg"><span class="leg-swatch shared"></span>Path</span>
-        <span class="leg"><span class="leg-swatch gold"></span>Kite surface</span>
-        <span class="leg"><span class="leg-swatch blue"></span>GitHub surface</span>
+        <span class="leg"><span class="leg-swatch gold"></span>Kite app</span>
+        <span class="leg"><span class="leg-swatch blue"></span>GitHub repo</span>
         <span class="leg"><span class="leg-swatch drop"></span>Drop-off</span>
       </div>
     </div>
 
     <div class="svg-frame">
-      <svg class="flowchart-svg" id="flow" viewBox="0 0 1180 1820" xmlns="http://www.w3.org/2000/svg">
+      <svg class="flowchart-svg" id="flow" viewBox="0 0 1180 1520" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#0a0a0a"/>
-          </marker>
           <marker id="ah-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
-          </marker>
-          <marker id="ah-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a8a8a"/>
           </marker>
           <marker id="ah-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
@@ -480,200 +488,159 @@
         </defs>
 
         <!-- ====== MAIN TRACK (single rail at x=130) ====== -->
-        <path id="path-shared" class="track-shared draw-on-load" d="M 130,75 L 130,1620"/>
-        <path class="pulse-shared"        d="M 130,75 L 130,1620"/>
-        <path class="pulse-shared delay-1" d="M 130,75 L 130,1620"/>
-        <path class="pulse-shared delay-2" d="M 130,75 L 130,1620"/>
+        <path id="path-shared" class="track-shared draw-on-load" d="M 130,75 L 130,1360"/>
+        <path class="pulse-shared"        d="M 130,75 L 130,1360"/>
+        <path class="pulse-shared delay-1" d="M 130,75 L 130,1360"/>
+        <path class="pulse-shared delay-2" d="M 130,75 L 130,1360"/>
 
         <!-- Side labels -->
-        <text class="lbl-side" x="40" y="430" transform="rotate(-90, 40, 430)">SETUP  ·  01 — 05</text>
-        <text class="lbl-side" x="40" y="1020" transform="rotate(-90, 40, 1020)" style="fill: var(--gold);">EDIT  ·  KITE SURFACE</text>
-        <text class="lbl-side" x="40" y="1390" transform="rotate(-90, 40, 1390)" style="fill: var(--blue);">SHIP  ·  GITHUB SURFACE</text>
+        <text class="lbl-side" x="40" y="300" transform="rotate(-90, 40, 300)">CONNECT  ·  01 — 04</text>
+        <text class="lbl-side" x="40" y="640" transform="rotate(-90, 40, 640)" style="fill: var(--gold);">GATE  ·  NEXT.JS ONLY</text>
+        <text class="lbl-side" x="40" y="1010" transform="rotate(-90, 40, 1010)" style="fill: var(--gold);">IMPORT  +  EDIT</text>
+        <text class="lbl-side" x="40" y="1230" transform="rotate(-90, 40, 1230)" style="fill: var(--blue);">SYNC  ·  GITHUB</text>
 
         <!-- 01 ENTRY -->
         <g class="station">
           <line x1="137" y1="75" x2="170" y2="75" stroke="#bbb" stroke-width="1.5"/>
           <rect class="station-card" x="170" y="45" width="600" height="60" rx="14"/>
           <text class="lbl-num" x="188" y="67">01  ·  ENTRY</text>
-          <text class="lbl-name" x="188" y="87">"Hey Kite — I want to modify my marketing pages"</text>
+          <text class="lbl-name" x="188" y="87">Start something now: scratch · import · create — or "import from &lt;repo&gt;" in chat</text>
         </g>
         <circle class="dot-shared" cx="130" cy="75" r="7"/>
 
-        <!-- 02 SYNC -->
+        <!-- 02 CONNECT -->
         <g class="station">
-          <line x1="137" y1="175" x2="170" y2="175" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card" x="170" y="145" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="167">02  ·  SYNC</text>
-          <text class="lbl-name" x="188" y="187">Slack sync · pull recent context</text>
+          <line x1="137" y1="215" x2="170" y2="215" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card blue-path" x="170" y="185" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="207" style="fill: var(--blue);">02  ·  CONNECT</text>
+          <text class="lbl-name" x="188" y="227">Install the Kite GitHub App · scoped repos &amp; permissions</text>
         </g>
-        <circle class="dot-shared" cx="130" cy="175" r="7"/>
-
-        <!-- DECISION 01 -->
-        <g class="station">
-          <line x1="137" y1="285" x2="170" y2="285" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card decision" x="170" y="247" width="540" height="76" rx="14"/>
-          <text class="lbl-decision-sub" x="188" y="270">◇  DECISION 01</text>
-          <text class="lbl-decision" x="188" y="293">Do you have a repository?</text>
-          <text class="lbl-sub" x="188" y="312">YES · skip ahead   ·   NO · Kite creates one</text>
-        </g>
-        <circle class="dot-decision" cx="130" cy="285" r="9"/>
-
-        <text class="lbl-branch" x="725" y="280">— NO →</text>
-        <path class="track-branch" d="M 715,285 L 770,285" marker-end="url(#ah-grey)"/>
-        <g class="station">
-          <rect class="station-card" x="770" y="257" width="200" height="56" rx="12"/>
-          <text class="lbl-num" x="788" y="278">02a  ·  NEW REPO</text>
-          <text class="lbl-sub" x="788" y="296">Kite creates &amp; commits it</text>
-        </g>
-        <path class="track-branch dashed" d="M 870,313 C 870,395 200,395 137,432" marker-end="url(#ah-grey)"/>
-
-        <!-- 03 AUTH -->
-        <g class="station">
-          <line x1="137" y1="460" x2="170" y2="460" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card" x="170" y="430" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="452">03  ·  AUTH</text>
-          <text class="lbl-name" x="188" y="472">Login with GitHub · install Kite App (minimum scope)</text>
-        </g>
-        <circle class="dot-shared" cx="130" cy="460" r="7"/>
+        <circle class="dot-blue" cx="130" cy="215" r="7"/>
 
         <g class="drop-group" data-drop="D1">
-          <path class="track-drop" d="M 770,460 L 805,460" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="434" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="455">D1  ·  20%</text>
-          <text class="lbl-drop" x="822" y="474">Platform lead denies install</text>
+          <path class="track-drop" d="M 770,215 L 805,215" marker-end="url(#ah-red)"/>
+          <rect class="station-card drop-card" x="805" y="189" width="200" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="822" y="210">D1  ·  20%</text>
+          <text class="lbl-drop" x="822" y="229">Platform lead denies install</text>
         </g>
 
-        <!-- 04 SCAN -->
+        <!-- 03 RESOLVE -->
         <g class="station">
-          <line x1="137" y1="580" x2="170" y2="580" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card" x="170" y="550" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="572">04  ·  SCAN</text>
-          <text class="lbl-name" x="188" y="592">Read repo · detect stack · verify we can manage it</text>
+          <line x1="137" y1="355" x2="170" y2="355" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card" x="170" y="325" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="347">03  ·  RESOLVE</text>
+          <text class="lbl-name" x="188" y="367">Name the repo · Kite finds the match <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">appsmithorg/test_1</tspan></text>
         </g>
-        <circle class="dot-shared" cx="130" cy="580" r="7"/>
+        <circle class="dot-shared" cx="130" cy="355" r="7"/>
 
         <g class="drop-group" data-drop="D2">
-          <path class="track-drop" d="M 770,580 L 805,580" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="554" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="575">D2  ·  12%</text>
-          <text class="lbl-drop" x="822" y="594">Stack we can't manage</text>
+          <path class="track-drop" d="M 770,355 L 805,355" marker-end="url(#ah-red)"/>
+          <rect class="station-card drop-card" x="805" y="329" width="200" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="822" y="350">D2  ·  —</text>
+          <text class="lbl-drop" x="822" y="369">No repo match / wrong repo</text>
         </g>
 
-        <!-- 05 REPLICATE -->
+        <!-- 04 CONFIRM -->
         <g class="station">
-          <line x1="137" y1="700" x2="170" y2="700" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card gold-path" x="170" y="670" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="692" style="fill: var(--gold);">05  ·  REPLICATE</text>
-          <text class="lbl-name" x="188" y="712">Mirror codebase into Kite env · collect credentials</text>
+          <line x1="137" y1="495" x2="170" y2="495" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card" x="170" y="465" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="487">04  ·  CONFIRM</text>
+          <text class="lbl-name" x="188" y="507">Importing replaces the current site — confirm before anything irreversible</text>
         </g>
-        <circle class="dot-gold" cx="130" cy="700" r="7"/>
+        <circle class="dot-shared" cx="130" cy="495" r="7"/>
 
-        <g class="drop-group" data-drop="D3">
-          <path class="track-drop" d="M 770,700 C 790,700 790,670 805,670" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="644" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="665">D3  ·  8%</text>
-          <text class="lbl-drop" x="822" y="684">Creds withheld by sec</text>
+        <!-- 05 GATE (decision) -->
+        <g class="station">
+          <line x1="137" y1="640" x2="170" y2="640" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card decision" x="170" y="602" width="540" height="76" rx="14"/>
+          <text class="lbl-decision-sub" x="188" y="625">◇  THE GATE</text>
+          <text class="lbl-decision" x="188" y="648">Is it a Next.js project?</text>
+          <text class="lbl-sub" x="188" y="667">YES ↓ import   ·   NO → refused, current site kept</text>
         </g>
+        <circle class="dot-decision" cx="130" cy="640" r="9"/>
+
+        <text class="lbl-branch" x="715" y="635">— NO →</text>
+        <g class="drop-group" data-drop="D3">
+          <path class="track-drop" d="M 712,640 L 805,640" marker-end="url(#ah-red)"/>
+          <rect class="station-card drop-card" x="805" y="614" width="200" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="822" y="635">D3  ·  THE GATE</text>
+          <text class="lbl-drop" x="822" y="654">Not a Next.js project</text>
+        </g>
+
+        <!-- 06 IMPORT -->
+        <g class="station">
+          <line x1="137" y1="800" x2="170" y2="800" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card blue-path" x="170" y="770" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="792" style="fill: var(--blue);">06  ·  IMPORT</text>
+          <text class="lbl-name" x="188" y="812">Pull repo from <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">main</tspan> into the Kite app · replace current site</text>
+        </g>
+        <circle class="dot-blue" cx="130" cy="800" r="7"/>
+
+        <!-- Surface tag · GitHub repo -->
+        <g>
+          <path class="track-branch" d="M 775,800 L 830,800" marker-end="url(#ah-blue)"/>
+          <rect class="station-card surface-blue" x="830" y="774" width="190" height="52" rx="10"/>
+          <text class="lbl-surface-blue" x="845" y="795">▼ GITHUB REPO</text>
+          <text class="lbl-sub" x="845" y="813" style="font-size: 10.5px;">appsmithorg/test_1 · main</text>
+        </g>
+
+        <!-- 07 SECRETS -->
+        <g class="station">
+          <line x1="137" y1="940" x2="170" y2="940" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card gold-path" x="170" y="910" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="932" style="fill: var(--gold);">07  ·  SECRETS</text>
+          <text class="lbl-name" x="188" y="952">Add required env vars in the Secret vault <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">backend/.env · NAME</tspan></text>
+        </g>
+        <circle class="dot-gold" cx="130" cy="940" r="7"/>
 
         <g class="drop-group" data-drop="D4">
-          <path class="track-drop" d="M 770,700 C 790,700 790,730 805,730" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="704" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="725">D4  ·  7%</text>
-          <text class="lbl-drop" x="822" y="744">"Extras" can't replicate</text>
+          <path class="track-drop" d="M 770,940 L 805,940" marker-end="url(#ah-red)"/>
+          <rect class="station-card drop-card" x="805" y="914" width="200" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="822" y="935">D4  ·  8%</text>
+          <text class="lbl-drop" x="822" y="954">Creds withheld by sec</text>
         </g>
 
-        <!-- 06 BRANCH -->
-        <g class="station">
-          <line x1="137" y1="830" x2="170" y2="830" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card gold-path" x="170" y="800" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="822" style="fill: var(--gold);">06  ·  BRANCH</text>
-          <text class="lbl-name" x="188" y="842">Create feature branch <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">kite/hero-headline-change</tspan></text>
-        </g>
-        <circle class="dot-gold" cx="130" cy="830" r="7"/>
-
-        <!-- 07 EDIT -->
-        <g class="station">
-          <line x1="137" y1="950" x2="170" y2="950" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card gold-path" x="170" y="920" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="942" style="fill: var(--gold);">07  ·  EDIT  +  LIVE PREVIEW</text>
-          <text class="lbl-name" x="188" y="962">User edits in Kite · preview at <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">appsmith.kite.space</tspan></text>
-        </g>
-        <circle class="dot-gold" cx="130" cy="950" r="7"/>
-
-        <!-- Surface tag pointing at Kite preview surface -->
-        <g>
-          <path class="track-branch" d="M 775,950 L 830,950" marker-end="url(#ah-gold)"/>
-          <rect class="station-card surface-gold" x="830" y="924" width="180" height="52" rx="10"/>
-          <text class="lbl-surface-gold" x="845" y="945">▲ KITE SURFACE</text>
-          <text class="lbl-sub" x="845" y="963" style="font-size: 10.5px;">appsmith.kite.space</text>
-        </g>
-
-        <!-- 08 PR -->
+        <!-- 08 EDIT + PREVIEW -->
         <g class="station">
           <line x1="137" y1="1080" x2="170" y2="1080" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card blue-path" x="170" y="1050" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="1072" style="fill: var(--blue);">08  ·  PR</text>
-          <text class="lbl-name" x="188" y="1092">Open PR on customer's repo (style-matched to recent commits)</text>
+          <rect class="station-card gold-path" x="170" y="1050" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="1072" style="fill: var(--gold);">08  ·  EDIT  +  LIVE PREVIEW</text>
+          <text class="lbl-name" x="188" y="1092">Edit in the Kite app · in-app live preview · <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">Publish</tspan></text>
         </g>
-        <circle class="dot-blue" cx="130" cy="1080" r="7"/>
+        <circle class="dot-gold" cx="130" cy="1080" r="7"/>
+
+        <!-- Surface tag · Kite app -->
+        <g>
+          <path class="track-branch" d="M 775,1080 L 830,1080" marker-end="url(#ah-gold)"/>
+          <rect class="station-card surface-gold" x="830" y="1054" width="190" height="52" rx="10"/>
+          <text class="lbl-surface-gold" x="845" y="1075">▲ KITE APP</text>
+          <text class="lbl-sub" x="845" y="1093" style="font-size: 10.5px;">edit · preview · publish</text>
+        </g>
+
+        <!-- 09 SYNC -->
+        <g class="station">
+          <line x1="137" y1="1220" x2="170" y2="1220" stroke="#bbb" stroke-width="1.5"/>
+          <rect class="station-card blue-path" x="170" y="1190" width="600" height="60" rx="14"/>
+          <text class="lbl-num" x="188" y="1212" style="fill: var(--blue);">09  ·  SYNC  (explicit)</text>
+          <text class="lbl-name" x="188" y="1232"><tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">Sync to GitHub</tspan> ↑ pushes · <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">Pull</tspan> ↓ brings changes in · on main</text>
+        </g>
+        <circle class="dot-blue" cx="130" cy="1220" r="7"/>
 
         <g class="drop-group" data-drop="D5">
-          <path class="track-drop" d="M 770,1080 L 805,1080" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="1054" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="1075">D5  ·  5%</text>
-          <text class="lbl-drop" x="822" y="1094">Team rejects the PR</text>
-        </g>
-
-        <!-- 09 DUAL PREVIEW -->
-        <g class="station">
-          <line x1="137" y1="1200" x2="170" y2="1200" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card" x="170" y="1170" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="1192">09  ·  DUAL PREVIEW</text>
-          <text class="lbl-name" x="188" y="1212">Kite preview + customer's existing CI preview · side by side</text>
-        </g>
-        <circle class="dot-shared" cx="130" cy="1200" r="7"/>
-
-        <!-- 10 MERGE -->
-        <g class="station">
-          <line x1="137" y1="1320" x2="170" y2="1320" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card blue-path" x="170" y="1290" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="1312" style="fill: var(--blue);">10  ·  MERGE</text>
-          <text class="lbl-name" x="188" y="1332">PR merges to <tspan style="font-family:'JetBrains Mono',monospace;font-size:12.5px;fill:var(--ink);">main</tspan> · conflicts resolved by LLM at this step only</text>
-        </g>
-        <circle class="dot-blue" cx="130" cy="1320" r="7"/>
-
-        <g class="drop-group" data-drop="D6">
-          <path class="track-drop" d="M 770,1320 L 805,1320" marker-end="url(#ah-red)"/>
-          <rect class="station-card drop-card" x="805" y="1294" width="200" height="52" rx="10"/>
-          <text class="lbl-drop-id" x="822" y="1315">D6  ·  6%</text>
-          <text class="lbl-drop" x="822" y="1334">CI/CD too slow</text>
-        </g>
-
-        <!-- 11 SYNC -->
-        <g class="station">
-          <line x1="137" y1="1450" x2="170" y2="1450" stroke="#bbb" stroke-width="1.5"/>
-          <rect class="station-card" x="170" y="1420" width="600" height="60" rx="14"/>
-          <text class="lbl-num" x="188" y="1442">11  ·  SYNC  (webhook)</text>
-          <text class="lbl-name" x="188" y="1462">Both surfaces refresh · customer workflows sync back to Kite</text>
-        </g>
-        <circle class="dot-shared" cx="130" cy="1450" r="7"/>
-
-        <!-- Surface tag pointing at GitHub-owned surface -->
-        <g>
-          <path class="track-branch" d="M 775,1450 L 830,1450" marker-end="url(#ah-blue)"/>
-          <rect class="station-card surface-blue" x="830" y="1424" width="180" height="52" rx="10"/>
-          <text class="lbl-surface-blue" x="845" y="1445">▼ CUSTOMER SURFACE</text>
-          <text class="lbl-sub" x="845" y="1463" style="font-size: 10.5px;">appsmith.com · AWS/Vercel</text>
+          <path class="track-drop" d="M 770,1220 L 805,1220" marker-end="url(#ah-red)"/>
+          <rect class="station-card drop-card" x="805" y="1194" width="200" height="52" rx="10"/>
+          <text class="lbl-drop-id" x="822" y="1215">D5  ·  —</text>
+          <text class="lbl-drop" x="822" y="1234">Sync / pull conflict</text>
         </g>
 
         <!-- TERMINUS -->
         <g class="station">
-          <line x1="143" y1="1620" x2="170" y2="1620" stroke="var(--ink)" stroke-width="2.5"/>
-          <rect class="station-card terminus" x="170" y="1588" width="420" height="64" rx="14"/>
-          <text class="lbl-terminus-sub" x="380" y="1611" text-anchor="middle">●  TERMINUS · LIVE ON BOTH</text>
-          <text class="lbl-terminus" x="380" y="1635" text-anchor="middle">Two-way sync active · scoped to kite/*</text>
+          <line x1="143" y1="1360" x2="170" y2="1360" stroke="var(--ink)" stroke-width="2.5"/>
+          <rect class="station-card terminus" x="170" y="1328" width="460" height="64" rx="14"/>
+          <text class="lbl-terminus-sub" x="400" y="1351" text-anchor="middle">●  TERMINUS · APP ⇄ REPO LINKED</text>
+          <text class="lbl-terminus" x="400" y="1375" text-anchor="middle">Live in Kite · in sync with GitHub on main</text>
         </g>
-        <circle class="dot-terminus" cx="130" cy="1620" r="10"/>
+        <circle class="dot-terminus" cx="130" cy="1360" r="10"/>
 
       </svg>
     </div>
@@ -681,7 +648,7 @@
     <div class="crux">
       <span class="crux-tag">★ The crux</span>
       <div class="crux-text">
-        The old "Big Decision" — <em>move to Kite or just raise PRs?</em> — has been retired. The new design says <strong>both, always</strong>: edit on Kite, ship via GitHub, sync both ways. <strong>The risk surface shifts to Station 11 (sync) and Station 10 (merge conflicts)</strong>. Get the webhook plumbing right and the LLM-merge right, and the rest is downstream.
+        There is no "move to Kite vs. just raise PRs" fork anymore, and no hidden webhook machinery. The model is simply <strong>one Kite app bound to one GitHub repo</strong>. Two things carry all the load-bearing risk: the <strong>Next.js gate</strong> at Station 05 (the one hard stop) and the <strong>explicit Sync / Pull</strong> at Station 09 (the only place app and repo can diverge). Get the gate's messaging and the push/pull conflict handling right, and everything else is downstream.
       </div>
     </div>
   </div>
@@ -689,93 +656,92 @@
   <!-- Four ways in -->
   <div class="section-head">
     <div>
-      <div class="kicker">The entry · expanding Decision 01</div>
+      <div class="kicker">The entry · the real "Start something now" menu</div>
       <h2>Four ways <em>in.</em></h2>
-      <p><code style="font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--bg-2);padding:1px 6px;border-radius:4px;border:1px solid var(--border);">Do you have a repository?</code> isn't a yes/no in practice — customers arrive through <strong>four different doors</strong>. Two <strong>create</strong> something new, two work with a repo that <strong>already exists</strong>. All four merge back into the single track above.</p>
+      <p>In the live product, one button — <code style="font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--bg-2);padding:1px 6px;border-radius:4px;border:1px solid var(--border);">Start something now</code> — opens <strong>three doors</strong>, and a fourth path runs entirely <strong>inside the chat</strong>. One door needs no GitHub at all; the other three put real code under version control. All four merge back into the single track above. <a href="flow.html" style="color:var(--gold-bright);font-weight:600;text-decoration:none;border-bottom:1px solid var(--gold-line);">See each one in the product →</a></p>
     </div>
-    <div class="right">2 create-new<br>2 existing-repo<br>1 Git-free path</div>
+    <div class="right">1 no-Git path<br>2 GitHub-UI doors<br>1 in-chat import</div>
   </div>
 
   <div class="doors">
 
     <article class="door create reveal">
       <div class="door-head">
-        <span class="door-id">CASE A</span>
-        <span class="door-kind">Create · Git hidden</span>
+        <span class="door-id">DOOR 1</span>
+        <span class="door-kind">Start from scratch</span>
       </div>
       <h4>"I just want a website"</h4>
-      <p class="who"><strong>No idea what Git or GitHub is</strong>, and doesn't want to learn. Describes the site in plain language and expects Kite to handle everything underneath.</p>
+      <p class="who"><strong>No idea what Git or GitHub is</strong>, and doesn't want to learn. Describes the site in plain language; Kite generates it from nothing. The real menu item: <strong>Start from scratch</strong>.</p>
       <div class="steps">
         <span class="step"><span class="chip">Describe site</span><span class="arrow">→</span></span>
         <span class="step gold"><span class="chip">Kite generates it</span><span class="arrow">→</span></span>
-        <span class="step hidden"><span class="chip">Repo created &amp; owned by Kite</span><span class="arrow">→</span></span>
         <span class="step gold"><span class="chip">Edit + preview</span></span>
       </div>
-      <span class="git-note invisible"><span class="sw"></span>GitHub never shown — Kite owns the repo on the user's behalf</span>
+      <span class="git-note invisible"><span class="sw"></span>No GitHub connection required to begin</span>
       <div class="door-merge">
-        <span class="tag">Merges at</span>
-        <span class="at">06 · Branch</span>
-        <span>— nothing to scan or import</span>
+        <span class="tag">Joins at</span>
+        <span class="at">08 · Edit</span>
+        <span>— nothing to connect or import</span>
       </div>
     </article>
 
     <article class="door create reveal">
       <div class="door-head">
-        <span class="door-id">CASE B</span>
-        <span class="door-kind">Create · new repo</span>
+        <span class="door-id">DOOR 2</span>
+        <span class="door-kind">Create new in GitHub</span>
       </div>
       <h4>New site, on <em>my</em> GitHub</h4>
-      <p class="who">No repository yet, but <strong>wants the site to live in their own GitHub</strong> from day one. Knows GitHub; just hasn't created the repo.</p>
+      <p class="who">No repository yet, but <strong>wants the site to live in their own GitHub</strong> from day one. Kite creates a fresh repo, links a website to it, then generates the site.</p>
       <div class="steps">
-        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
-        <span class="step blue"><span class="chip">Kite creates the repo</span><span class="arrow">→</span></span>
-        <span class="step gold"><span class="chip">Scaffold new site</span><span class="arrow">→</span></span>
+        <span class="step blue"><span class="chip">Connect GitHub App</span><span class="arrow">→</span></span>
+        <span class="step blue"><span class="chip">Name + create the repo</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Generate the site</span><span class="arrow">→</span></span>
         <span class="step gold"><span class="chip">Edit + preview</span></span>
       </div>
       <div class="door-merge">
-        <span class="tag">Merges at</span>
-        <span class="at">03 · Auth</span>
-        <span>→ then 06 · Branch</span>
+        <span class="tag">Joins at</span>
+        <span class="at">02 · Connect</span>
+        <span>→ then 06 · Import</span>
       </div>
     </article>
 
     <article class="door import reveal">
       <div class="door-head">
-        <span class="door-id">CASE C</span>
-        <span class="door-kind">Existing · import</span>
+        <span class="door-id">DOOR 3</span>
+        <span class="door-kind">Import from GitHub</span>
       </div>
       <h4>Import my live site</h4>
-      <p class="who"><strong>Real codebase already on GitHub</strong>, already deployed. Wants Kite to connect to it and start editing — the path the main track documents end-to-end.</p>
+      <p class="who"><strong>Real codebase already on GitHub</strong>, already deployed. Picks the repo from the <strong>Import from GitHub</strong> picker and Kite imports its code — the path the main track documents end-to-end.</p>
       <div class="steps">
-        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
-        <span class="step"><span class="chip">Scan repo</span><span class="arrow">→</span></span>
-        <span class="step gold"><span class="chip">Replicate into Kite</span><span class="arrow">→</span></span>
+        <span class="step blue"><span class="chip">Connect GitHub App</span><span class="arrow">→</span></span>
+        <span class="step"><span class="chip">Resolve · Next.js gate</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Import into Kite</span><span class="arrow">→</span></span>
         <span class="step gold"><span class="chip">Edit + preview</span></span>
       </div>
       <div class="door-merge">
-        <span class="tag">Merges at</span>
-        <span class="at">04 · Scan</span>
+        <span class="tag">Joins at</span>
+        <span class="at">03 · Resolve</span>
         <span>— the documented main path</span>
       </div>
     </article>
 
     <article class="door import reveal">
       <div class="door-head">
-        <span class="door-id">CASE D</span>
-        <span class="door-kind">Existing · empty repo</span>
+        <span class="door-id">DOOR 4</span>
+        <span class="door-kind">Import via chat</span>
       </div>
-      <h4>Use my <em>blank</em> repo</h4>
-      <p class="who">Already created an <strong>empty GitHub repository</strong> and wants Kite to fill it. Repo exists; there's just nothing to import yet.</p>
+      <h4>Just say <em>"import from&hellip;"</em></h4>
+      <p class="who">Already inside a Kite app and types <strong>"import from test_1"</strong> in the chat. Kite resolves the repo by name, confirms before replacing, and pulls it in — no menus, no forms.</p>
       <div class="steps">
-        <span class="step blue"><span class="chip">Login w/ GitHub</span><span class="arrow">→</span></span>
-        <span class="step"><span class="chip">Detect empty repo</span><span class="arrow">→</span></span>
-        <span class="step gold"><span class="chip">Scaffold site into it</span><span class="arrow">→</span></span>
-        <span class="step gold"><span class="chip">Edit + preview</span></span>
+        <span class="step"><span class="chip">Type "import from …"</span><span class="arrow">→</span></span>
+        <span class="step blue"><span class="chip">Kite finds the match</span><span class="arrow">→</span></span>
+        <span class="step"><span class="chip">Confirm replace</span><span class="arrow">→</span></span>
+        <span class="step gold"><span class="chip">Import + preview</span></span>
       </div>
       <div class="door-merge">
-        <span class="tag">Merges at</span>
-        <span class="at">03 · Auth</span>
-        <span>→ scaffold, not import</span>
+        <span class="tag">Joins at</span>
+        <span class="at">03 · Resolve</span>
+        <span>→ then 05 · Next.js gate</span>
       </div>
     </article>
 
@@ -786,46 +752,46 @@
     <div>
       <div class="kicker">The decisions</div>
       <h2>Six calls that shape the integration.</h2>
-      <p>Captured from the GitHub-integration sync. These are the load-bearing choices behind the flow above — the ones that <strong>aren't visible in the code yet</strong>, but constrain what gets built next.</p>
+      <p>The load-bearing choices behind the flow above — each one now <strong>visible in the live product</strong>, not just on a whiteboard. They define what the integration is, and where its risk lives.</p>
     </div>
-    <div class="right">5 architecture<br>1 platform swap<br>1 launch flag</div>
+    <div class="right">1 link model<br>1 sync rule<br>+ a hard gate</div>
   </div>
 
   <div class="decisions">
     <div class="decision-card reveal">
-      <div class="k">Architecture · branching</div>
-      <h4>No <code>kite/main</code></h4>
-      <p>Kite-created branches use the <code>kite/&lt;slug&gt;</code> namespace (e.g. <code>kite/hero-headline-change</code>). <strong>There is no <code>kite/main</code></strong> — the customer's <code>main</code> is the only main. Avoids the "which main is real" confusion that surfaced in the v0.4 review.</p>
+      <div class="k">Architecture · the model</div>
+      <h4>One app ⇄ one repo + branch</h4>
+      <p>Each website binds to a single repository on one branch (<code>main</code> today), shown under <strong>Settings → Repository</strong>. No mirrored "kite/*" namespace, no second main — <strong>the customer's <code>main</code> is the only main</strong>. Change repository or Disconnect at any time.</p>
     </div>
 
     <div class="decision-card reveal">
       <div class="k">Architecture · sync</div>
-      <h4>Webhooks, not polling</h4>
-      <p>GitHub webhooks drive the two-way sync. Applies to <code>kite/*</code> branches and to merges into <code>main</code> — <strong>not</strong> to every branch in the repo. Customer-side workflows (formatters, codegen, lint fixes) flow back into the Kite environment.</p>
-    </div>
-
-    <div class="decision-card reveal">
-      <div class="k">Architecture · conflicts</div>
-      <h4>LLM resolves at PR stage only</h4>
-      <p>We do <strong>not</strong> continuously sync <code>main</code> into in-flight feature branches. Merge conflicts are handled by the LLM at the final PR step. Optional <strong>user-triggered re-sync</strong> if <code>main</code> moves a lot mid-session.</p>
-    </div>
-
-    <div class="decision-card reveal">
-      <div class="k">Architecture · preview</div>
-      <h4>Dual preview, dual confidence</h4>
-      <p>Kite hosts <code>appsmith.kite.space</code> (always tracks <code>main</code>). Customer's existing deploy preview (if any) stays alongside. Showing both lets the marketer trust the change <strong>before</strong> it touches production infra.</p>
+      <h4>Explicit, not webhook-driven</h4>
+      <p>Sync is <strong>user-triggered, both ways</strong>: <code>Sync to GitHub</code> pushes the app's edits as commits; <code>Pull</code> brings GitHub changes back in. No background webhook machinery — the user decides when app and repo reconcile, which keeps the mental model simple and the surface area small.</p>
     </div>
 
     <div class="decision-card reveal swap">
-      <div class="k">Platform · integrations</div>
-      <h4>Composio → PipeDream</h4>
-      <p>Composio has been unreliable around signup/invites. Migrating to PipeDream for user-level integrations (Notion, etc.). <strong>Platform integrations</strong> (GitHub, Slack) stay direct — they're load-bearing enough to own ourselves.</p>
+      <div class="k">Architecture · the gate</div>
+      <h4>Next.js imports only</h4>
+      <p>The import contract is deliberately narrow: <strong>Next.js projects only</strong>. Anything else is refused with a plain reason, and the current site is left intact. A narrow, enforced contract is what lets Kite promise a clean import every time.</p>
+    </div>
+
+    <div class="decision-card reveal">
+      <div class="k">Architecture · entry</div>
+      <h4>Three doors + in-chat</h4>
+      <p><code>Start from scratch</code>, <code>Import from GitHub</code>, and <code>Create new in GitHub</code> — plus a conversational <code>import from &lt;repo&gt;</code> path inside any app. All four converge on the <strong>same import pipeline</strong>, so there's one code path to harden, not four.</p>
     </div>
 
     <div class="decision-card reveal flag">
-      <div class="k">Launch · feature flag</div>
-      <h4>Secrets button · AppSmith only</h4>
-      <p>The "Secrets" entry point ships behind a feature flag, enabled only for AppSmith users in the first pass. Lets us shake out the credential-flow design (see drop-off <strong>D3</strong>) on a friendly cohort before exposing it broadly.</p>
+      <div class="k">Security · access</div>
+      <h4>GitHub App is the credential</h4>
+      <p>Access is the <strong>Kite GitHub App installation</strong> itself — scoped to the repos the customer picks, revocable from Integrations or Settings. Repo runtime secrets (e.g. <code>NAME</code>) live in the in-app <strong>Secret vault</strong> (<code>backend/.env</code>), supplied before the site runs — never hard-coded.</p>
+    </div>
+
+    <div class="decision-card reveal">
+      <div class="k">Architecture · safety</div>
+      <h4>Resolve, then confirm</h4>
+      <p>Kite <strong>auto-resolves</strong> a named repo to a concrete match (<code>appsmithorg/test_1</code>) and, because importing <strong>replaces the current site</strong>, always asks for an explicit <em>Yes</em> first. Destructive steps are never silent.</p>
     </div>
   </div>
 
@@ -833,10 +799,10 @@
   <div class="section-head">
     <div>
       <div class="kicker">The exits</div>
-      <h2>Six places where customers <em>leave</em>.</h2>
-      <p>Each red exit on the map maps to a card below. Drop rates are <strong>pre-data estimates</strong> — replace with real values after the first 100 sign-ups. Hover a card to highlight its exit on the chart above.</p>
+      <h2>Five places where it can <em>stall</em>.</h2>
+      <p>Each red exit on the map maps to a card below. Percentages are <strong>pre-data estimates</strong> — replace with real values after the first 100 imports. Hover a card to highlight its exit on the chart above.</p>
     </div>
-    <div class="right">3 setup exits<br>1 replicate exit<br>2 ship exits</div>
+    <div class="right">1 connect · 1 resolve<br>1 gate · 1 secrets<br>1 sync</div>
   </div>
 
   <div class="drops">
@@ -844,68 +810,58 @@
     <article class="drop reveal" data-drop="D1">
       <div class="drop-head">
         <span class="drop-id">D1 · 20%</span>
-        <span class="drop-stage">Station 03 · Auth</span>
+        <span class="drop-stage">Station 02 · Connect</span>
       </div>
       <h4>Platform lead denies the GitHub App install</h4>
-      <p>The marketer asks for Kite; the VP-Eng or platform team is the one approving the permission scope. If the install scope feels broad — especially the deploy-adjacent scopes — they say no on instinct. <strong>The load-bearing risk from the v0.4 research read; the combined architecture does not change it.</strong></p>
-      <div class="mit">Install with the minimum scope only. Defer write/deploy-adjacent scopes to the point we actually need them. Add inline plain-English explanations next to every permission.</div>
+      <p>The marketer asks for Kite; the VP-Eng or platform team approves the permission scope. The install requests <strong>read metadata</strong> plus <strong>read + write</strong> to code, workflows and administration — if that feels broad, they say no on instinct.</p>
+      <div class="mit">Let them pick <strong>Only select repositories</strong>, not all. Explain each scope in plain English at the install screen, and lead with the fact that access is revocable in one click from Integrations.</div>
     </article>
 
     <article class="drop reveal" data-drop="D2">
       <div class="drop-head">
-        <span class="drop-id">D2 · 12%</span>
-        <span class="drop-stage">Station 04 · Scan</span>
+        <span class="drop-id">D2 · —</span>
+        <span class="drop-stage">Station 03 · Resolve</span>
       </div>
-      <h4>Stack Kite can't manage yet</h4>
-      <p>The scan returns WordPress, Wix, Squarespace, Webflow, or a custom monorepo with exotic Webpack config. Kite can't credibly own the runtime, so the journey ends here.</p>
-      <div class="mit">Catch this at <strong>Station 01</strong>, not at 04 — pre-flight the URL the moment it's pasted. For unsupported stacks, capture the framework as a waitlist signal instead of leaving the user with a dead end.</div>
+      <h4>No repo match, or the wrong one</h4>
+      <p>The user names a repo Kite can't see (not granted in the App install) or that resolves ambiguously. Kite can't proceed to import what it can't find — and must not import the wrong repo over the current site.</p>
+      <div class="mit">When zero matches, point straight back to <strong>Configure GitHub App</strong> to widen access. When more than one matches, list candidates and make the user choose before confirming.</div>
     </article>
 
     <article class="drop reveal" data-drop="D3">
       <div class="drop-head">
-        <span class="drop-id">D3 · 8%</span>
-        <span class="drop-stage">Station 05 · Replicate</span>
+        <span class="drop-id">D3 · THE GATE</span>
+        <span class="drop-stage">Station 05 · Next.js gate</span>
       </div>
-      <h4>Credentials withheld by their security team</h4>
-      <p>Replicating the codebase into the Kite environment needs API keys, env vars, CMS tokens, CDN credentials. The platform team approved the GitHub App but draws a hard line at handing over secrets — especially production ones. <strong>This is what the AppSmith-only Secrets button is designed to de-risk first.</strong></p>
-      <div class="mit">Two paths: <strong>(a)</strong> Start with staging-only credentials and gate prod creds behind explicit migration. <strong>(b)</strong> Offer a Vault-style integration so secrets stay in the customer's vault and Kite reads them at runtime, not at install.</div>
+      <h4>Not a Next.js project</h4>
+      <p>Imports support <strong>Next.js only</strong>. Anything else — WordPress, a static site, a non-Next.js app — is refused cleanly: <em>"it is not a Next.js project, and imports here only support Next.js repos."</em> The current site is <strong>left untouched</strong> and Kite offers to find another repo.</p>
+      <div class="mit">Surface the Next.js requirement at the picker and first chat message, before the user invests. For unsupported stacks, capture the framework as a waitlist signal instead of a dead end.</div>
     </article>
 
     <article class="drop reveal" data-drop="D4">
       <div class="drop-head">
-        <span class="drop-id">D4 · 7%</span>
-        <span class="drop-stage">Station 05 · Replicate</span>
+        <span class="drop-id">D4 · 8%</span>
+        <span class="drop-stage">Station 07 · Secrets</span>
       </div>
-      <h4>"Extras" Kite can't replicate</h4>
-      <p>The site depends on things outside the repo: a Contentful pipeline, a Segment proxy, an internal auth gateway, a custom CDN ruleset. Kite spins up the runtime and pieces are missing. The combined architecture <strong>partially defuses this</strong> — Station 09's dual preview surfaces the gap before merge — but doesn't make it disappear.</p>
-      <div class="mit">Run a <strong>pre-flight "extras inventory"</strong> at Station 04 (scan), not at 05. Tell the customer up-front what we can replicate, what stays connected via their accounts, and what we can't take.</div>
+      <h4>Credentials withheld by their security team</h4>
+      <p>The imported repo needs runtime env vars (Kite flags them by name, e.g. <code>NAME</code>). The platform team approved the GitHub App but draws a hard line at handing over secrets — especially production ones — so the site can't fully run.</p>
+      <div class="mit">Start with <strong>staging-only</strong> values in the Secret vault and gate prod secrets behind explicit migration. Longer term, read secrets from the customer's own vault at runtime rather than storing them.</div>
     </article>
 
     <article class="drop reveal" data-drop="D5">
       <div class="drop-head">
-        <span class="drop-id">D5 · 5%</span>
-        <span class="drop-stage">Station 08 · PR</span>
+        <span class="drop-id">D5 · —</span>
+        <span class="drop-stage">Station 09 · Sync</span>
       </div>
-      <h4>Engineering team rejects the PR</h4>
-      <p>Kite's diff doesn't match the team's house style — wrong import ordering, wrong component pattern, touched files outside scope. PR sits, then closes. <strong>Webhook sync (Station 11) is designed to absorb their formatter / lint workflows back into Kite</strong>, so this exit narrows over time — but only after the team merges at least once.</p>
-      <div class="mit">Run a <strong>"style match" pass</strong> against the repo's recent merged commits before opening any PR. Match conventions; don't impose them. Auto-message on the PR explaining what Kite did and what it deliberately didn't touch.</div>
-    </article>
-
-    <article class="drop reveal" data-drop="D6">
-      <div class="drop-head">
-        <span class="drop-id">D6 · 6%</span>
-        <span class="drop-stage">Station 10 · Merge → CI/CD</span>
-      </div>
-      <h4>Customer's CI/CD is too slow</h4>
-      <p>The PR merges, but their pipeline takes 14 minutes to build and deploy. From the user's seat, the Kite preview already looks done — and then they wait. The dual-preview design helps, but the customer's prod surface still lags.</p>
-      <div class="mit">Surface the expected wait time the moment the PR merges (borrowed from GitHub Actions / Vercel UI). Make it explicit that <code>appsmith.kite.space</code> updates immediately while <code>appsmith.com</code> follows when their pipeline finishes.</div>
+      <h4>Sync / pull conflict</h4>
+      <p>Because sync is explicit, the app and the repo can drift between actions. A <code>Pull</code> after the team pushed to <code>main</code>, or a <code>Sync to GitHub</code> over diverged history, can conflict — the one place app and repo can genuinely disagree.</p>
+      <div class="mit">Detect divergence before the push, show a clear diff, and offer pull-first. Resolve conflicts with the LLM at this step and always preserve a recoverable snapshot of the app's state.</div>
     </article>
 
   </div>
 
   <div class="footer">
-    <span class="attr">Kite AI CMO · GitHub integration architecture · 28 May 2026</span>
-    <span>v0.5 · gold + blue, combined · two-way sync</span>
+    <span class="attr">Kite AI · GitHub integration architecture · 15 Jun 2026</span>
+    <span>v0.6 · app ⇄ repo · paired with the live <a href="flow.html">product flow</a></span>
   </div>
 
 </div>
