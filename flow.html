@@ -674,7 +674,7 @@
 </script>
 
 <script>
-  /* Select any text → "Message in Slack": copy the selection and open the channel to paste. */
+  /* Select any text → "Message in Slack and Paste the message": copy the selection and open the channel to paste. */
   (function () {
     var SLACK_CHANNEL_URL = "https://theappsmith.slack.com/archives/C096ZSKDDL5";
     var btn = document.createElement('button');
@@ -689,7 +689,7 @@
       '<path d="M90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2EB67D"/>' +
       '<path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9z" fill="#ECB22E"/>' +
       '<path d="M77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ECB22E"/>' +
-      '</svg><span>Message in Slack</span>';
+      '</svg><span>Message in Slack and Paste the message</span>';
     document.body.appendChild(btn);
     var label = btn.querySelector('span');
     var lastText = '';
@@ -703,7 +703,7 @@
       var rect = sel.getRangeAt(0).getBoundingClientRect();
       if (!rect || (rect.width === 0 && rect.height === 0)) { hide(); return; }
       lastText = text;
-      label.textContent = 'Message in Slack';
+      label.textContent = 'Message in Slack and Paste the message';
       btn.style.left = (rect.left + rect.width / 2) + 'px';
       btn.style.top = rect.top + 'px';
       btn.classList.add('on');
