@@ -991,11 +991,6 @@
   /* Select any text → "Message in Slack": copy the selection and open the channel to paste. */
   (function () {
     var SLACK_CHANNEL_URL = "https://theappsmith.slack.com/archives/C096ZSKDDL5";
-    // Paste a Slack Incoming Webhook URL here to post the selected text straight into the channel.
-    // Leave empty to fall back to copy-to-clipboard + open the channel.
-    // SECURITY: a webhook URL is a secret — anyone who can read this page can post to the channel,
-    // so don't commit it to a public/published repo. Inject it at deploy time instead.
-    var SLACK_WEBHOOK_URL = "";
     var btn = document.createElement('button');
     btn.className = 'slack-share';
     btn.type = 'button';
@@ -1037,24 +1032,10 @@
     // keep the text selection alive when pressing the button
     btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
     btn.addEventListener('click', function () {
-      var text = lastText;
-      if (SLACK_WEBHOOK_URL) {
-        label.textContent = 'Sending to Slack…';
-        fetch(SLACK_WEBHOOK_URL, {
-          method: 'POST', mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: 'payload=' + encodeURIComponent(JSON.stringify({ text: text }))
-        }).then(function () {
-          label.textContent = 'Sent to Slack ✓'; setTimeout(hide, 1300);
-        }, function () {
-          copyText(text); label.textContent = 'Send failed — copied instead'; setTimeout(hide, 1600);
-        });
-      } else {
-        copyText(text);
-        label.textContent = 'Copied — opening Slack…';
-        window.open(SLACK_CHANNEL_URL, '_blank', 'noopener');
-        setTimeout(hide, 1200);
-      }
+      copyText(lastText); // copy so the message is ready to paste in Slack
+      label.textContent = 'Copied — paste in Slack';
+      window.open(SLACK_CHANNEL_URL, '_blank', 'noopener');
+      setTimeout(hide, 1300);
     });
     function copyText(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
